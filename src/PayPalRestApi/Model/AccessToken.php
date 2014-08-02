@@ -30,13 +30,11 @@ class AccessToken
             'scope', 'access_token', 'token_type', 'app_id', 'expires_in',
         );
         $diff = array_diff($mandatoryKeys, array_keys($data));
-        if (count($diff) > 0)
-        {
+        if (count($diff) > 0) {
             throw new AccessTokenException('Mandatory data missing for: '.implode(', ', $diff));
         }
 
-        if (empty($data['access_token']))
-        {
+        if (empty($data['access_token'])) {
             throw new AccessTokenException('access_token is mandatory and should not be empty');
         }
 

@@ -59,8 +59,8 @@ class AccessTokenRepository
             );
         }
 
-        if (200 != $response->getStatusCode())
-        {
+        if (200 != $response->getStatusCode()) {
+
             throw new AccessTokenException(
                 "Cannot retrieve access token: ".
                 "response status ".$response->getStatusCode()." ".$response->getReasonPhrase()

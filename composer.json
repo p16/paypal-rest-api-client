@@ -1,5 +1,17 @@
 {
+    "name": "p16/PayPalRestApiClient",
+    "description": "PHP Library for accessing PayPal Rest API.",
+    "keywords": ["paypal rest api client"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Filippo De Santis",
+            "email": "filippo.desantis@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
     "require": {
+        "php": ">=5.4",
         "guzzle/guzzle": "3.9.1"
     },
     "autoload": {
