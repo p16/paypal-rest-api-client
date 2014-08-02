@@ -1,1 +1,23 @@
-PayPay REST API Client Library
+PHP PayPal REST API Client
+==========================
+
+...
+
+
+Installation
+------------
+
+1. Donwload the repository
+
+2. Run composer install
+
+    composer install
+
+
+Running tests
+-------------
+
+From the root folder run
+
+    phpunit -c .
+

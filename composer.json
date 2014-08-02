@@ -1,0 +1,8 @@
+{
+    "require": {
+        "guzzle/guzzle": "3.9.1"
+    },
+    "autoload": {
+        "psr-0": {"PayPalRestApi": "src/"}
+    }
+}
