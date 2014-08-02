@@ -24,9 +24,15 @@ class PaymentService
         $this->debug = $debug;
     }
 
-    public function create(AccessToken $accessToken, $total, $currency, $description = null)
-    {
-        $requestBody = json_encode(array(
+    public function create(
+        AccessToken $accessToken,
+        $total,
+        $currency,
+        $description = null,
+        $items = array(),
+        $shippingAddress = array()
+    ) {
+        $data = array(
             'intent' => 'sale',
             'payer' => array(
                 'payment_method' => 'paypal'
@@ -44,7 +50,17 @@ class PaymentService
                     'description' => $description
                 )
             ),
-        ));
+        );
+
+        if ( ! empty($items)) {
+            $data['transactions'][0]['item_list']['items'] = $items;
+        }
+
+        if ( ! empty($shippingAddress)) {
+            $data['transactions'][0]['item_list']['shipping_address'] = $shippingAddress;
+        }
+
+        $requestBody = json_encode($data);
 
         $request = $this->client->createRequest(
             'POST',
