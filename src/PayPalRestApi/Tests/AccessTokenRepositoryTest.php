@@ -5,7 +5,7 @@ namespace PayPalRestApi\Tests;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use PayPalRestApi\Repository\AccessTokenRepository;
 
-class PayPalAccessTokenTest extends \PHPUnit_Framework_TestCase
+class AccessTokenRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetAuthenticationToken()
     {
