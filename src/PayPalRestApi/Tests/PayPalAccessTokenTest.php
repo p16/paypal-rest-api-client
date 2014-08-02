@@ -55,7 +55,11 @@ class PayPalAccessTokenTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($expectedResponse));
 
 
-        $repo = new AccessTokenRepository($this->client);
+        $repo = new AccessTokenRepository(
+            $this->client,
+            'https://api.sandbox.paypal.com',
+            true
+        );
         $token = $repo->getAccessToken($clientId, $secret);
 
         $this->assertEquals(
@@ -134,7 +138,11 @@ class PayPalAccessTokenTest extends \PHPUnit_Framework_TestCase
             ->with($expectedRequest)
             ->will($this->throwException($exception));
 
-        $repo = new AccessTokenRepository($this->client);
+        $repo = new AccessTokenRepository(
+            $this->client,
+            'https://api.sandbox.paypal.com',
+            true
+        );
         $token = $repo->getAccessToken($clientId, $secret);
     }
 }

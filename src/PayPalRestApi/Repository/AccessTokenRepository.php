@@ -8,26 +8,30 @@ use PayPalRestApi\Exception\AccessTokenException;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 
 /**
- *
+ * 
  */
 class AccessTokenRepository
 {
     protected $client;
+    protected $baseUrl;
+    protected $debug = false;
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, $baseUrl, $debug = false)
     {
         $this->client = $client;
+        $this->baseUrl = $baseUrl;
+        $this->debug = $debug;
     }
 
     /**
-     * Calling twice the getAccessToken method will give you two different token event for the same user.
-     * For the time being, expires_in is not taken in consideration for this call.
+     * Calling twice the getAccessToken method with the same credential will give you two different token.
+     * For the time being, expires_in is not taken into consideration.
      */
     public function getAccessToken($clientId, $secret)
     {
         $request = $this->client->createRequest(
             'POST',
-            'https://api.sandbox.paypal.com/v1/oauth2/token',
+            $this->baseUrl.'/v1/oauth2/token',
             array(
                 'Accept' => 'application/json',
                 'Accept-Language' => 'en_US',
@@ -36,7 +40,7 @@ class AccessTokenRepository
             'grant_type=client_credentials',
             array(
                 'auth' => array($clientId, $secret),
-                'debug' => true
+                'debug' => $this->debug
             )
         );
 
