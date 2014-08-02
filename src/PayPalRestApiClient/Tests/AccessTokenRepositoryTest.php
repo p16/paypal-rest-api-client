@@ -1,9 +1,9 @@
 <?php
 
-namespace PayPalRestApi\Tests;
+namespace PayPalRestApiClient\Tests;
 
 use Guzzle\Http\Exception\ClientErrorResponseException;
-use PayPalRestApi\Repository\AccessTokenRepository;
+use PayPalRestApiClient\Repository\AccessTokenRepository;
 
 class AccessTokenRepositoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -85,7 +85,7 @@ class AccessTokenRepositoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException PayPalRestApi\Exception\AccessTokenException
+     * @expectedException PayPalRestApiClient\Exception\AccessTokenException
      * @expectedExceptionMessage Cannot retrieve access token: response status 401 Unauthorized, reason 'invalid_client' Client secret does not match for this client
      */
     public function testWrongResponseGivenShouldThrowPayPalAccessTokenException()

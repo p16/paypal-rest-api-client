@@ -11,7 +11,7 @@
          bootstrap="bootstrap.php"
 >
     <testsuites>
-        <testsuite name="PayPalRestApi Test Suite">
+        <testsuite name="PayPalRestApiClient Test Suite">
             <directory>src/*/Tests</directory>
         </testsuite>
     </testsuites>

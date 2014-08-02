@@ -1,8 +1,8 @@
 <?php
 
-namespace PayPalRestApi\Tests;
+namespace PayPalRestApiClient\Tests;
 
-use PayPalRestApi\Model\AccessToken;
+use PayPalRestApiClient\Model\AccessToken;
 
 class AccessTokenTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,11 +17,11 @@ class AccessTokenTest extends \PHPUnit_Framework_TestCase
         );
         $accessToken = AccessToken::fromArray($data);
 
-        $this->assertInstanceOf('PayPalRestApi\Model\AccessToken', $accessToken);
+        $this->assertInstanceOf('PayPalRestApiClient\Model\AccessToken', $accessToken);
     }
 
     /**
-     * @expectedException PayPalRestApi\Exception\AccessTokenException
+     * @expectedException PayPalRestApiClient\Exception\AccessTokenException
      * @expectedExceptionMessage Mandatory data missing for: scope, access_token, token_type, app_id, expires_in
      */
     public function testFromArrayValidationNoScope()
@@ -32,7 +32,7 @@ class AccessTokenTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException PayPalRestApi\Exception\AccessTokenException
+     * @expectedException PayPalRestApiClient\Exception\AccessTokenException
      * @expectedExceptionMessage access_token is mandatory and should not be empty
      */
     public function testFromArrayValidationEmptyAccessToken()

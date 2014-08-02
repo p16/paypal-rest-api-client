@@ -1,8 +1,8 @@
 <?php
 
-namespace PayPalRestApi\Model;
+namespace PayPalRestApiClient\Model;
 
-use PayPalRestApi\Exception\AccessTokenException;
+use PayPalRestApiClient\Exception\AccessTokenException;
 
 class AccessToken
 {

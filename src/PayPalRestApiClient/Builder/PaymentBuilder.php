@@ -1,13 +1,13 @@
 <?php
 
-namespace PayPalRestApi\Builder;
+namespace PayPalRestApiClient\Builder;
 
-use PayPalRestApi\Exception\BuilderException;
-use PayPalRestApi\Model\Payer;
-use PayPalRestApi\Model\Transaction;
-use PayPalRestApi\Model\Amount;
-use PayPalRestApi\Model\Link;
-use PayPalRestApi\Model\Payment;
+use PayPalRestApiClient\Exception\BuilderException;
+use PayPalRestApiClient\Model\Payer;
+use PayPalRestApiClient\Model\Transaction;
+use PayPalRestApiClient\Model\Amount;
+use PayPalRestApiClient\Model\Link;
+use PayPalRestApiClient\Model\Payment;
 
 class PaymentBuilder
 {

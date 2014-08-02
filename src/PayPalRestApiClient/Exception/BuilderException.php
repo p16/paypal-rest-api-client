@@ -1,6 +1,6 @@
 <?php
 
-namespace PayPalRestApi\Exception;
+namespace PayPalRestApiClient\Exception;
 
 class BuilderException extends \Exception
 {

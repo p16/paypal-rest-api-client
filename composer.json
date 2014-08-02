@@ -15,6 +15,6 @@
         "guzzle/guzzle": "3.9.1"
     },
     "autoload": {
-        "psr-0": {"PayPalRestApi": "src/"}
+        "psr-0": {"PayPalRestApiClient": "src/"}
     }
 }

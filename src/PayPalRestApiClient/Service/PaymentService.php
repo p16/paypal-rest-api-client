@@ -1,11 +1,11 @@
 <?php
 
-namespace PayPalRestApi\Service;
+namespace PayPalRestApiClient\Service;
 
 use Guzzle\Http\Client;
-use PayPalRestApi\Model\AccessToken;
+use PayPalRestApiClient\Model\AccessToken;
 use Guzzle\Http\Exception\ClientErrorResponseException;
-use PayPalRestApi\Builder\PaymentBuilder;
+use PayPalRestApiClient\Builder\PaymentBuilder;
 
 class PaymentService
 {

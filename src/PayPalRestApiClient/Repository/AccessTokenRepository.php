@@ -1,10 +1,10 @@
 <?php
 
-namespace PayPalRestApi\Repository;
+namespace PayPalRestApiClient\Repository;
 
 use Guzzle\Http\Client;
-use PayPalRestApi\Model\AccessToken;
-use PayPalRestApi\Exception\AccessTokenException;
+use PayPalRestApiClient\Model\AccessToken;
+use PayPalRestApiClient\Exception\AccessTokenException;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 
 /**

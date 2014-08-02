@@ -1,6 +1,6 @@
 <?php
 
-namespace PayPalRestApi\Model;
+namespace PayPalRestApiClient\Model;
 
 class Amount
 {

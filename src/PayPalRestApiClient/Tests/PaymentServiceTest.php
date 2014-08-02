@@ -1,10 +1,10 @@
 <?php
 
-namespace PayPalRestApi\Tests;
+namespace PayPalRestApiClient\Tests;
 
 use Guzzle\Http\Client;
-use PayPalRestApi\Repository\AccessTokenRepository;
-use PayPalRestApi\Service\PaymentService;
+use PayPalRestApiClient\Repository\AccessTokenRepository;
+use PayPalRestApiClient\Service\PaymentService;
 
 class PaymentServiceTest extends \PHPUnit_Framework_TestCase
 {
@@ -82,7 +82,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $status = 201;
         $json = '{"id":"PAY-74S36081BM7699248KPOPD5Q","create_time":"2014-08-02T14:13:10Z","update_time":"2014-08-02T14:13:10Z","state":"created","intent":"sale","payer":{"payment_method":"paypal","payer_info":{"shipping_address":{}}},"transactions":[{"amount":{"total":"14.77","currency":"EUR","details":{"subtotal":"14.77"}},"description":"My fantastic transaction description"}],"links":[{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-74S36081BM7699248KPOPD5Q","rel":"self","method":"GET"},{"href":"https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=EC-26339740WK411984R","rel":"approval_url","method":"REDIRECT"},{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-74S36081BM7699248KPOPD5Q/execute","rel":"execute","method":"POST"}]}';
 
-        $accessToken = $this->getMockBuilder('PayPalRestApi\Model\AccessToken')
+        $accessToken = $this->getMockBuilder('PayPalRestApiClient\Model\AccessToken')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -167,7 +167,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         );
         $payment = $service->create($accessToken, $this->total, $this->currency, $this->description);
 
-        $this->assertInstanceOf('PayPalRestApi\Model\Payment', $payment);
+        $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
     }
 }
 

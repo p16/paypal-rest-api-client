@@ -1,8 +1,8 @@
 <?php
 
-namespace PayPalRestApi\Tests;
+namespace PayPalRestApiClient\Tests;
 
-use PayPalRestApi\Builder\PaymentBuilder;
+use PayPalRestApiClient\Builder\PaymentBuilder;
 
 class PaymentBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,7 +20,7 @@ class PaymentBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('created', $payment->getState());
         $this->assertEquals('sale', $payment->getIntent());
 
-        $this->assertInstanceOf('PayPalRestApi\Model\Payer', $payment->getPayer());
+        $this->assertInstanceOf('PayPalRestApiClient\Model\Payer', $payment->getPayer());
         $this->assertEquals('paypal', $payment->getPayer()->getPaymentMethod());
         $this->assertEquals(array('shipping_address' => array()), $payment->getPayer()->getInfo());
         $this->assertEquals(null, $payment->getPayer()->getFundingInstruments());
@@ -28,13 +28,13 @@ class PaymentBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertcount(1, $payment->getTransactions());
         $transaction = $payment->getTransactions()[0];
 
-        $this->assertInstanceOf('PayPalRestApi\Model\Transaction', $transaction);
+        $this->assertInstanceOf('PayPalRestApiClient\Model\Transaction', $transaction);
         $this->assertEquals('My fantastic transaction description', $transaction->getDescription());
         $this->assertEquals(array(), $transaction->getItemList());
         $this->assertEquals(array(), $transaction->getRelatedResources());
 
         $amount = $transaction->getAmount();
-        $this->assertInstanceOf('PayPalRestApi\Model\Amount', $amount);
+        $this->assertInstanceOf('PayPalRestApiClient\Model\Amount', $amount);
         $this->assertEquals('EUR', $amount->getCurrency());
         $this->assertEquals(14.77, $amount->getTotal());
         $this->assertEquals(array('subtotal' => 14.77), $amount->getDetails());
