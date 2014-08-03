@@ -68,10 +68,7 @@ Using the library
             'sku' => '3',
         )
     );
-
-
-
-
+    
     $this->client = new Client();
 
     $repo = new AccessTokenRepository(
