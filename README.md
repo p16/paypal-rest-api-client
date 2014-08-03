@@ -24,8 +24,53 @@ Using the library
 
     $clientId = 'CLIENTID';
     $secret = 'SECRET';
-    $this->baseUrl = 'https://api.sandbox.paypal.com';
+
     $this->debug = true;
+    $this->baseUrl = 'https://api.sandbox.paypal.com';
+    $this->returnUrl = 'http://example.com/success';
+    $this->cancelUrl = 'http://example.com/cancel';
+    $this->total = 15.00;
+    $this->currency = 'EUR';
+    $this->description = 'My fantastic transaction description';
+
+    $this->shippingAddress = array(
+        'recipient_name' => 'Fi Fi',
+        'type' => 'residential',
+        'line1' => 'Via del mare',
+        'line2' => '',
+        'city' => 'Milano',
+        'country_code' => 'IT',
+        'postal_code' => '60010',
+        'state' => '',
+        'phone' => '3213213211',
+    );
+
+    $this->items = array(
+        array(
+            'quantity' => 1,
+            'name' => 'example',
+            'price' => '5.00',
+            'currency' => 'EUR',
+            'sku' => '1',
+        ),
+        array(
+            'quantity' => 1,
+            'name' => 'example',
+            'price' => '3.00',
+            'currency' => 'EUR',
+            'sku' => '2',
+        ),
+        array(
+            'quantity' => 1,
+            'name' => 'example',
+            'price' => '7.00',
+            'currency' => 'EUR',
+            'sku' => '3',
+        )
+    );
+
+
+
 
     $this->client = new Client();
 
@@ -35,26 +80,6 @@ Using the library
         true
     );
     $token = $repo->getAccessToken($clientId, $secret);
-
-    $requestBody = json_encode(array(
-        'intent' => 'sale',
-        'payer' => array(
-            'payment_method' => 'paypal'
-        ),
-        'redirect_urls' => array(
-            'return_url' => 'http://example.com/success',
-            'cancel_url' => 'http://example.com/cancel'
-        ),
-        'transactions' => array(
-            array(
-                'amount' => array(
-                    'total' => 15.00,
-                    'currency' => 'EUR',
-                ),
-                'description' => 'My fantastic transaction description',
-            )
-        ),
-    ));
 
     $service = new PaymentService(
         $this->client,
