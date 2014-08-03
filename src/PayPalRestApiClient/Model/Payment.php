@@ -11,7 +11,10 @@ class Payment
     protected $intent;
     protected $payer;
     protected $transactions;
+
     protected $links;
+    protected $executeUrl;
+    protected $approvalUrl;
 
     public function __construct(
         $id,
@@ -31,6 +34,23 @@ class Payment
         $this->payer = $payer;
         $this->transactions = $transactions;
         $this->links = $links;
+
+        $this->initUrls();
+    }
+
+    private function initUrls()
+    {
+        foreach ($this->links as $link) {
+            switch ($link->getRel()) {
+                case 'approval_url':
+                    $this->approvalUrl = $link->getHref();
+                    break;
+                
+                case 'execute':
+                    $this->executeUrl = $link->getHref();
+                    break;
+            }
+        }
     }
 
     public function getId()
@@ -71,5 +91,15 @@ class Payment
     public function getLinks()
     {
         return $this->links;
+    }
+
+    public function getExecuteUrl()
+    {
+        return $this->executeUrl;
+    }
+
+    public function getApprovalUrl()
+    {
+        return $this->approvalUrl;
     }
 }

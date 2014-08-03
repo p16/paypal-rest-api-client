@@ -4,6 +4,7 @@ namespace PayPalRestApiClient\Service;
 
 use Guzzle\Http\Client;
 use PayPalRestApiClient\Model\AccessToken;
+use PayPalRestApiClient\Model\Payment;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use PayPalRestApiClient\Builder\PaymentBuilder;
 
@@ -22,6 +23,56 @@ class PaymentService
         $this->returnUrl = $returnUrl;
         $this->cancelUrl = $cancelUrl;
         $this->debug = $debug;
+    }
+
+    public function capture(
+        AccessToken $accessToken,
+        Payment $payment,
+        $payerId
+    ) {
+        $request = $this->client->createRequest(
+            'POST',
+            $payment->getExecuteUrl(),
+            array(
+                'Accept' => 'application/json',
+                'Accept-Language' => 'en_US',
+                'Authorization' => $accessToken->getTokenType().' '.$accessToken->getAccessToken(),
+                'Content-Type' => 'application/json'
+            ),
+            '{ "payer_id" : "'.$payerId.'" }',
+            array(
+                'debug' => $this->debug
+            )
+        );
+
+        try {
+            $response = $this->client->send($request);
+        }
+        catch (ClientErrorResponseException $e) {
+
+            $response = $e->getResponse();
+            $details = json_decode($response->getBody(), true);
+
+            throw new PaymentException(
+                "Cannot capture payment: ".
+                "response status ".$response->getStatusCode()." ".$response->getReasonPhrase().", ".
+                "reason '".$details['error']."' ".$details['error_description']
+            );
+        }
+
+        if (200 != $response->getStatusCode()) {
+            throw new PaymentException(
+                "Cannot capture payment: ".
+                "response status ".$response->getStatusCode()." ".$response->getReasonPhrase()
+            );
+        }
+
+        $data = json_decode($response->getBody(), true);
+
+        $paymentBuilder = new PaymentBuilder();
+        $payment = $paymentBuilder->build($data);
+
+        return $payment;
     }
 
     public function create(
