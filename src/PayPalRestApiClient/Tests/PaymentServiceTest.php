@@ -352,6 +352,30 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
     }
+
+    /**
+     * @see https://developer.paypal.com/docs/integration/direct/accept-credit-cards/
+     */
+    public function testCreateCreditCardPayment()
+    {
+        $this->markTestIncomplete();
+    }
+
+    /**
+     * @see https://developer.paypal.com/docs/integration/direct/capture-payment/
+     */
+    public function testAuthorizePayment()
+    {
+        $this->markTestIncomplete();
+    }
+
+    /**
+     * @see https://developer.paypal.com/docs/integration/direct/capture-payment/
+     */
+    public function testCapturePayment()
+    {
+        $this->markTestIncomplete();
+    }
 }
 
 
