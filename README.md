@@ -4,7 +4,7 @@ PHP PayPal REST API Client
 This library wants to be a client for the [PayPal REST API](https://developer.paypal.com/docs/api/).
 There is an official SDK and you can find it [here](https://github.com/paypal/rest-api-sdk-php).
 I tried it and I tried to [contribute on it](https://github.com/p16/rest-api-sdk-php) (the tests were calling the actual paypal sandbox). 
-I needed a simpler and OOP library, therefore I did this one.
+But I needed a simpler and OOP library, and I do not have the time to contribute as much as I think is needed on the official one, therefore I did this one.
 
 Feedback, PR and contribution are welcome.
 
