@@ -106,7 +106,7 @@ Using the library
         )
     );
     
-    $this->client = new Client();
+    $this->client = new \Guzzle\Http\Client();
 
     $repo = new AccessTokenRepository(
         $this->client,
