@@ -1,6 +1,8 @@
 PHP PayPal REST API Client
 ==========================
 
+[![Latest Stable Version](https://poser.pugx.org/p16/pay-pal-rest-api-client/v/stable.svg)](https://packagist.org/packages/p16/pay-pal-rest-api-client) [![Total Downloads](https://poser.pugx.org/p16/pay-pal-rest-api-client/downloads.svg)](https://packagist.org/packages/p16/pay-pal-rest-api-client) [![Latest Unstable Version](https://poser.pugx.org/p16/pay-pal-rest-api-client/v/unstable.svg)](https://packagist.org/packages/p16/pay-pal-rest-api-client) [![License](https://poser.pugx.org/p16/pay-pal-rest-api-client/license.svg)](https://packagist.org/packages/p16/pay-pal-rest-api-client)
+
 This library wants to be a PHP client for the [PayPal REST API](https://developer.paypal.com/docs/api/).
 
 There is an official SDK and you can find it [here](https://github.com/paypal/rest-api-sdk-php).
