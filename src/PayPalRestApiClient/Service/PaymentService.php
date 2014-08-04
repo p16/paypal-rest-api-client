@@ -75,19 +75,100 @@ class PaymentService
         return $payment;
     }
 
+    public function authorize(
+        AccessToken $accessToken,
+        $total,
+        $currency,
+        $payer,
+        $description = null,
+        $items = array(),
+        $shippingAddress = array()
+    ) {
+        $data = array(
+            'intent' => 'authorize',
+            'payer' => $payer,
+            'redirect_urls' => array(
+                'return_url' => $this->returnUrl,
+                'cancel_url' => $this->cancelUrl
+            ),
+            'transactions' => array(
+                array(
+                    'amount' => array(
+                        'total' => $total,
+                        'currency' => $currency,
+                    ),
+                    'description' => $description
+                )
+            ),
+        );
+
+        if ( ! empty($items)) {
+            $data['transactions'][0]['item_list']['items'] = $items;
+        }
+
+        if ( ! empty($shippingAddress)) {
+            $data['transactions'][0]['item_list']['shipping_address'] = $shippingAddress;
+        }
+
+        $requestBody = json_encode($data);
+
+        $request = $this->client->createRequest(
+            'POST',
+            $this->baseUrl.'/v1/payments/payment',
+            array(
+                'Accept' => 'application/json',
+                'Accept-Language' => 'en_US',
+                'Authorization' => $accessToken->getTokenType().' '.$accessToken->getAccessToken(),
+                'Content-Type' => 'application/json'
+            ),
+            $requestBody,
+            array(
+                'debug' => $this->debug
+            )
+        );
+
+        try {
+            $response = $this->client->send($request);
+        }
+        catch (ClientErrorResponseException $e) {
+
+            $response = $e->getResponse();
+            $details = json_decode($response->getBody(), true);
+
+            throw new PaymentException(
+                "Cannot create payment: ".
+                "response status ".$response->getStatusCode()." ".$response->getReasonPhrase().", ".
+                "reason '".$details['error']."' ".$details['error_description']
+            );
+        }
+
+        if (201 != $response->getStatusCode()) {
+            throw new PaymentException(
+                "Cannot create payment: ".
+                "response status ".$response->getStatusCode()." ".$response->getReasonPhrase()
+            );
+        }
+
+        $data = json_decode($response->getBody(), true);
+
+        $paymentBuilder = new PaymentBuilder();
+        $payment = $paymentBuilder->build($data);
+
+        return $payment;
+    }
+
     public function create(
         AccessToken $accessToken,
         $total,
         $currency,
+        $payer,
         $description = null,
         $items = array(),
         $shippingAddress = array()
     ) {
         $data = array(
             'intent' => 'sale',
-            'payer' => array(
-                'payment_method' => 'paypal'
-            ),
+            'payer' => $payer,
             'redirect_urls' => array(
                 'return_url' => $this->returnUrl,
                 'cancel_url' => $this->cancelUrl
