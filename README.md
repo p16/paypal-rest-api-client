@@ -27,6 +27,23 @@ At the moment the only [PayPal REST API](https://developer.paypal.com/docs/api/)
 Installation
 ------------
 
+1. Add the following dependency to your composer.json
+
+
+    "p16/pay-pal-rest-api-client": "dev-master"
+
+
+2. Run
+
+    
+    composer update
+
+
+
+
+Running tests
+-------------
+
 1. Donwload the repository
 
 2. Run composer install
@@ -34,10 +51,7 @@ Installation
     composer install
 
 
-Running tests
--------------
-
-From the root folder run
+3. From the root folder run
 
     phpunit -c .
 
