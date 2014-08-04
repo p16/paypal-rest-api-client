@@ -1,8 +1,10 @@
 PHP PayPal REST API Client
 ==========================
 
-This library wants to be a client for the [PayPal REST API](https://developer.paypal.com/docs/api/).
+This library wants to be a PHP client for the [PayPal REST API](https://developer.paypal.com/docs/api/).
+
 There is an official SDK and you can find it [here](https://github.com/paypal/rest-api-sdk-php).
+
 I tried it and I tried to [contribute on it](https://github.com/p16/rest-api-sdk-php) (the tests were calling the actual paypal sandbox). 
 But I needed a simpler and OOP library, and I did not have the time to contribute as much as I think is needed on the official one, therefore I did this one.
 
@@ -17,8 +19,8 @@ Features
 
 At the moment the only [PayPal REST API](https://developer.paypal.com/docs/api/) calls implemented are:
 
-- Request a Access Token: https://developer.paypal.com/docs/api/#authentication--headers
-- Create a payment only with "paypal" payment_method: https://developer.paypal.com/docs/api/#create-a-payment 
+- Require an access token: https://developer.paypal.com/docs/api/#authentication--headers
+- Create a payment (only with payment_method = "paypal"): https://developer.paypal.com/docs/api/#create-a-payment 
 - Execute a payment: https://developer.paypal.com/docs/api/#execute-an-approved-paypal-payment
 
 
