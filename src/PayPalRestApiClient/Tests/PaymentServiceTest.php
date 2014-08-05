@@ -69,6 +69,14 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('createRequest', 'send'))
             ->getMock();
+
+        $this->service = new PaymentService(
+            $this->client,
+            $this->baseUrl,
+            $this->returnUrl,
+            $this->cancelUrl,
+            $this->debug
+        );
     }
 
     public function testCreateMultipleItems()
@@ -128,14 +136,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->expectedResponse));
 
 
-        $service = new PaymentService(
-            $this->client,
-            $this->baseUrl,
-            $this->returnUrl,
-            $this->cancelUrl,
-            $this->debug
-        );
-        $payment = $service->create(
+        $payment = $this->service->create(
             $this->accessToken,
             $this->total,
             $this->currency,
@@ -201,14 +202,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->expectedResponse));
 
 
-        $service = new PaymentService(
-            $this->client,
-            $this->baseUrl,
-            $this->returnUrl,
-            $this->cancelUrl,
-            $this->debug
-        );
-        $payment = $service->create(
+        $payment = $this->service->create(
             $this->accessToken,
             $this->total,
             $this->currency,
@@ -267,14 +261,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $payerId = "CBMFXGW3CHM7Q";
 
 
-        $service = new PaymentService(
-            $this->client,
-            $this->baseUrl,
-            $this->returnUrl,
-            $this->cancelUrl,
-            $this->debug
-        );
-        $payment = $service->capture($this->accessToken, $payment, $payerId);
+        $payment = $this->service->capture($this->accessToken, $payment, $payerId);
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
         $this->assertEquals('approved', $payment->getState());
@@ -356,14 +343,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             ->with($this->expectedRequest)
             ->will($this->returnValue($this->expectedResponse));
 
-        $service = new PaymentService(
-            $this->client,
-            $this->baseUrl,
-            $this->returnUrl,
-            $this->cancelUrl,
-            $this->debug
-        );
-        $payment = $service->create(
+        $payment = $this->service->create(
             $this->accessToken,
             $this->total,
             $this->currency,
@@ -430,15 +410,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             ->with($this->expectedRequest)
             ->will($this->returnValue($this->expectedResponse));
 
-
-        $service = new PaymentService(
-            $this->client,
-            $this->baseUrl,
-            $this->returnUrl,
-            $this->cancelUrl,
-            $this->debug
-        );
-        $payment = $service->authorize(
+        $payment = $this->service->authorize(
             $this->accessToken,
             $this->total,
             $this->currency,
@@ -527,14 +499,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             ->with($this->expectedRequest)
             ->will($this->returnValue($this->expectedResponse));
 
-        $service = new PaymentService(
-            $this->client,
-            $this->baseUrl,
-            $this->returnUrl,
-            $this->cancelUrl,
-            $this->debug
-        );
-        $payment = $service->authorize(
+        $payment = $this->service->authorize(
             $this->accessToken,
             $this->total,
             $this->currency,
