@@ -1,5 +1,5 @@
 {
-    "name": "p16/pay-pal-rest-api-client",
+    "name": "p16/paypal-rest-api-client",
     "description": "PHP Library for accessing PayPal Rest API.",
     "keywords": ["paypal rest api client"],
     "license": "MIT",
