@@ -5,6 +5,7 @@ namespace PayPalRestApiClient\Service;
 use Guzzle\Http\Client;
 use PayPalRestApiClient\Model\AccessToken;
 use PayPalRestApiClient\Model\Payment;
+use PayPalRestApiClient\Builder\PaymentRequestBodyBuilder;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use PayPalRestApiClient\Builder\PaymentBuilder;
 
@@ -39,7 +40,7 @@ class PaymentService
                 'Authorization' => $accessToken->getTokenType().' '.$accessToken->getAccessToken(),
                 'Content-Type' => 'application/json'
             ),
-            '{ "payer_id" : "'.$payerId.'" }',
+            '{"payer_id":"'.$payerId.'"}',
             array(
                 'debug' => $this->debug
             )
@@ -75,14 +76,7 @@ class PaymentService
         return $payment;
     }
 
-    public function authorize(AccessToken $accessToken, $paymentRequestBodyBuilder)
-    {
-        $paymentRequestBodyBuilder->setIntent('authorize');
-
-        return $this->post($accessToken, $paymentRequestBodyBuilder);
-    }
-
-    public function create(AccessToken $accessToken, $paymentRequestBodyBuilder)
+    public function authorize(AccessToken $accessToken, PaymentRequestBodyBuilder $paymentRequestBodyBuilder)
     {
         $paymentRequestBodyBuilder->setIntent('authorize');
 
@@ -91,9 +85,18 @@ class PaymentService
         return $this->doSend($request);
     }
 
-    protected function buildRequest($accessToken, $requestBody)
+    public function create(AccessToken $accessToken, PaymentRequestBodyBuilder $paymentRequestBodyBuilder)
     {
-        $data = $paymentRequestBodyBuilder->buildRequestBody();
+        $paymentRequestBodyBuilder->setIntent('sale');
+
+        $request = $this->buildRequest($accessToken, $paymentRequestBodyBuilder);
+
+        return $this->doSend($request);
+    }
+
+    protected function buildRequest(AccessToken $accessToken, PaymentRequestBodyBuilder $paymentRequestBodyBuilder)
+    {
+        $data = $paymentRequestBodyBuilder->build();
         $requestBody = json_encode($data);
 
         $request = $this->client->createRequest(

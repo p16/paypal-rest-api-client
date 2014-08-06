@@ -2,7 +2,7 @@
 
 namespace PayPalRestApiClient\Model;
 
-class Amount
+class Amount implements AmountInterface
 {
     protected $currency;
     protected $total;

@@ -16,42 +16,6 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->currency = 'EUR';
         $this->description = 'My fantastic transaction description';
 
-        $this->shippingAddress = array(
-            'recipient_name' => 'Fi Fi',
-            'type' => 'residential',
-            'line1' => 'Via del mare',
-            'line2' => '',
-            'city' => 'Milano',
-            'country_code' => 'IT',
-            'postal_code' => '60010',
-            'state' => '',
-            'phone' => '3213213211',
-        );
-
-        $this->items = array(
-            array(
-                'quantity' => 1,
-                'name' => 'example',
-                'price' => '5.00',
-                'currency' => 'EUR',
-                'sku' => '1',
-            ),
-            array(
-                'quantity' => 1,
-                'name' => 'example',
-                'price' => '3.00',
-                'currency' => 'EUR',
-                'sku' => '2',
-            ),
-            array(
-                'quantity' => 1,
-                'name' => 'example',
-                'price' => '7.00',
-                'currency' => 'EUR',
-                'sku' => '3',
-            )
-        );
-
         $this->accessToken = $this->getMockBuilder('PayPalRestApiClient\Model\AccessToken')
             ->disableOriginalConstructor()
             ->getMock();
@@ -86,13 +50,11 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->initResponse($status, $json);
         $this->initAccessToken('Bearer', '123abc123abc');
 
-        $this->payer = array(
-            'payment_method' => 'paypal'
-        );
-
-        $requestBody = json_encode(array(
+        $requestBody = array(
             'intent' => 'sale',
-            'payer' => $this->payer,
+            'payer' => array(
+                'payment_method' => 'paypal'
+            ),
             'redirect_urls' => array(
                 'return_url' => $this->returnUrl,
                 'cancel_url' => $this->cancelUrl
@@ -105,45 +67,50 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
                     ),
                     'description' => $this->description,
                     'item_list' => array(
-                        'items' => $this->items,
-                        'shipping_address' => $this->shippingAddress
+                        'items' => array(
+                            array(
+                                'quantity' => 1,
+                                'name' => 'example',
+                                'price' => '5.00',
+                                'currency' => 'EUR',
+                                'sku' => '1',
+                            ),
+                            array(
+                                'quantity' => 1,
+                                'name' => 'example',
+                                'price' => '3.00',
+                                'currency' => 'EUR',
+                                'sku' => '2',
+                            ),
+                            array(
+                                'quantity' => 1,
+                                'name' => 'example',
+                                'price' => '7.00',
+                                'currency' => 'EUR',
+                                'sku' => '3',
+                            )
+                        ),
+                        'shipping_address' => array(
+                            'recipient_name' => 'Fi Fi',
+                            'type' => 'residential',
+                            'line1' => 'Via del mare',
+                            'line2' => '',
+                            'city' => 'Milano',
+                            'country_code' => 'IT',
+                            'postal_code' => '60010',
+                            'state' => '',
+                            'phone' => '3213213211',
+                        )
                     )
                 )
             ),
-        ));
-
-        $this->client->expects($this->once())
-            ->method('createRequest')
-            ->with(
-                'POST',
-                $this->baseUrl.'/v1/payments/payment',
-                array(
-                    'Accept' => 'application/json',
-                    'Accept-Language' => 'en_US',
-                    'Authorization' => $this->accessToken->getTokenType().' '.$this->accessToken->getAccessToken(),
-                    'Content-Type' => 'application/json'
-                ),
-                $requestBody,
-                array(
-                    'debug' => $this->debug
-                )
-            )
-            ->will($this->returnValue($this->expectedRequest));
-
-        $this->client->expects($this->once())
-            ->method('send')
-            ->with($this->expectedRequest)
-            ->will($this->returnValue($this->expectedResponse));
-
+        );
+        $this->initBuilder($requestBody, 'sale');
+        $this->initClient($requestBody);
 
         $payment = $this->service->create(
             $this->accessToken,
-            $this->total,
-            $this->currency,
-            $this->payer,
-            $this->description,
-            $this->items,
-            $this->shippingAddress
+            $this->builder
         );
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
@@ -156,13 +123,11 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->initResponse($status, $json);
         $this->initAccessToken('Bearer', '123abc123abc');
 
-        $this->payer = array(
-            'payment_method' => 'paypal'
-        );
-
-        $requestBody = json_encode(array(
+        $requestBody = array(
             'intent' => 'sale',
-            'payer' => $this->payer,
+            'payer' => array(
+                'payment_method' => 'paypal'
+            ),
             'redirect_urls' => array(
                 'return_url' => $this->returnUrl,
                 'cancel_url' => $this->cancelUrl
@@ -176,38 +141,13 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
                     'description' => $this->description
                 )
             ),
-        ));
-
-        $this->client->expects($this->once())
-            ->method('createRequest')
-            ->with(
-                'POST',
-                $this->baseUrl.'/v1/payments/payment',
-                array(
-                    'Accept' => 'application/json',
-                    'Accept-Language' => 'en_US',
-                    'Authorization' => $this->accessToken->getTokenType().' '.$this->accessToken->getAccessToken(),
-                    'Content-Type' => 'application/json'
-                ),
-                $requestBody,
-                array(
-                    'debug' => $this->debug
-                )
-            )
-            ->will($this->returnValue($this->expectedRequest));
-
-        $this->client->expects($this->once())
-            ->method('send')
-            ->with($this->expectedRequest)
-            ->will($this->returnValue($this->expectedResponse));
-
+        );
+        $this->initBuilder($requestBody, 'sale');
+        $this->initClient($requestBody);
 
         $payment = $this->service->create(
             $this->accessToken,
-            $this->total,
-            $this->currency,
-            $this->payer,
-            $this->description
+            $this->builder
         );
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
@@ -224,30 +164,8 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->initResponse($status, $json);
         $this->initAccessToken('Bearer', '123abc123abc');
 
-        $requestBody = '{ "payer_id" : "CBMFXGW3CHM7Q" }';
-
-        $this->client->expects($this->once())
-            ->method('createRequest')
-            ->with(
-                'POST',
-                $this->baseUrl.'/v1/payments/payment/PAY-6T42818722685883WKPPAT6I/execute',
-                array(
-                    'Accept' => 'application/json',
-                    'Accept-Language' => 'en_US',
-                    'Authorization' => $this->accessToken->getTokenType().' '.$this->accessToken->getAccessToken(),
-                    'Content-Type' => 'application/json'
-                ),
-                $requestBody,
-                array(
-                    'debug' => $this->debug
-                )
-            )
-            ->will($this->returnValue($this->expectedRequest));
-
-        $this->client->expects($this->once())
-            ->method('send')
-            ->with($this->expectedRequest)
-            ->will($this->returnValue($this->expectedResponse));
+        $requestBody = array("payer_id" => "CBMFXGW3CHM7Q");
+        $this->initClient($requestBody, '/v1/payments/payment/PAY-6T42818722685883WKPPAT6I/execute');
 
         $payment = $this->getMockBuilder('PayPalRestApiClient\Model\Payment')
             ->disableOriginalConstructor()
@@ -278,33 +196,31 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->initResponse($status, $json);
         $this->initAccessToken('Bearer', '123abc123abc');
 
-        $this->payer = array(
-            'payment_method' => 'credit_card',
-            'funding_instruments' => array(
-                array(
-                    'credit_card' => array(
-                        'number' => '4417119669820331',
-                        'type' => 'visa',
-                        'expire_month' => 11,
-                        'expire_year' => 2018,
-                        'cvv2' => '874',
-                        'first_name' => 'Betsy',
-                        'last_name' => 'Buyer',
-                        'billing_address' => array(
-                            'line1' => '111 First Street',
-                            'city' => 'Saratoga',
-                            'state' => 'CA',
-                            'postal_code' => '95070',
-                            'country_code' => 'US'
-                        )
-                    )
-                 )
-            ),
-        );
-
-        $requestBody = json_encode(array(
+        $requestBody = array(
             'intent' => 'sale',
-            'payer' => $this->payer,
+            'payer' => array(
+                'payment_method' => 'credit_card',
+                'funding_instruments' => array(
+                    array(
+                        'credit_card' => array(
+                            'number' => '4417119669820331',
+                            'type' => 'visa',
+                            'expire_month' => 11,
+                            'expire_year' => 2018,
+                            'cvv2' => '874',
+                            'first_name' => 'Betsy',
+                            'last_name' => 'Buyer',
+                            'billing_address' => array(
+                                'line1' => '111 First Street',
+                                'city' => 'Saratoga',
+                                'state' => 'CA',
+                                'postal_code' => '95070',
+                                'country_code' => 'US'
+                            )
+                        )
+                     )
+                ),
+            ),
             'redirect_urls' => array(
                 'return_url' => $this->returnUrl,
                 'cancel_url' => $this->cancelUrl
@@ -318,37 +234,13 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
                     'description' => $this->description
                 )
             ),
-        ));
-
-        $this->client->expects($this->once())
-            ->method('createRequest')
-            ->with(
-                'POST',
-                $this->baseUrl.'/v1/payments/payment',
-                array(
-                    'Accept' => 'application/json',
-                    'Accept-Language' => 'en_US',
-                    'Authorization' => $this->accessToken->getTokenType().' '.$this->accessToken->getAccessToken(),
-                    'Content-Type' => 'application/json'
-                ),
-                $requestBody,
-                array(
-                    'debug' => $this->debug
-                )
-            )
-            ->will($this->returnValue($this->expectedRequest));
-
-        $this->client->expects($this->once())
-            ->method('send')
-            ->with($this->expectedRequest)
-            ->will($this->returnValue($this->expectedResponse));
+        );
+        $this->initBuilder($requestBody, 'sale');
+        $this->initClient($requestBody);
 
         $payment = $this->service->create(
             $this->accessToken,
-            $this->total,
-            $this->currency,
-            $this->payer,
-            $this->description
+            $this->builder
         );
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
@@ -365,13 +257,11 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->initResponse($status, $json);
         $this->initAccessToken('Bearer', '123abc123abc');
 
-        $this->payer = array(
-            'payment_method' => 'paypal'
-        );
-
-        $requestBody = json_encode(array(
+        $requestBody = array(
             'intent' => 'authorize',
-            'payer' => $this->payer,
+            'payer' => array(
+                'payment_method' => 'paypal'
+            ),
             'redirect_urls' => array(
                 'return_url' => $this->returnUrl,
                 'cancel_url' => $this->cancelUrl
@@ -385,37 +275,13 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
                     'description' => $this->description
                 )
             ),
-        ));
-
-        $this->client->expects($this->once())
-            ->method('createRequest')
-            ->with(
-                'POST',
-                $this->baseUrl.'/v1/payments/payment',
-                array(
-                    'Accept' => 'application/json',
-                    'Accept-Language' => 'en_US',
-                    'Authorization' => $this->accessToken->getTokenType().' '.$this->accessToken->getAccessToken(),
-                    'Content-Type' => 'application/json'
-                ),
-                $requestBody,
-                array(
-                    'debug' => $this->debug
-                )
-            )
-            ->will($this->returnValue($this->expectedRequest));
-
-        $this->client->expects($this->once())
-            ->method('send')
-            ->with($this->expectedRequest)
-            ->will($this->returnValue($this->expectedResponse));
+        );
+        $this->initBuilder($requestBody, 'authorize');
+        $this->initClient($requestBody);
 
         $payment = $this->service->authorize(
             $this->accessToken,
-            $this->total,
-            $this->currency,
-            $this->payer,
-            $this->description
+            $this->builder
         );
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
@@ -434,33 +300,31 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->initResponse($status, $json);
         $this->initAccessToken('Bearer', '123abc123abc');
 
-        $this->payer = array(
-            'payment_method' => 'credit_card',
-            'funding_instruments' => array(
-                array(
-                    'credit_card' => array(
-                        'number' => '4417119669820331',
-                        'type' => 'visa',
-                        'expire_month' => 11,
-                        'expire_year' => 2018,
-                        'cvv2' => '874',
-                        'first_name' => 'Betsy',
-                        'last_name' => 'Buyer',
-                        'billing_address' => array(
-                            'line1' => '111 First Street',
-                            'city' => 'Saratoga',
-                            'state' => 'CA',
-                            'postal_code' => '95070',
-                            'country_code' => 'US'
-                        )
-                    )
-                 )
-            ),
-        );
-
-        $requestBody = json_encode(array(
+        $requestBody = array(
             'intent' => 'authorize',
-            'payer' => $this->payer,
+            'payer' => array(
+                'payment_method' => 'credit_card',
+                'funding_instruments' => array(
+                    array(
+                        'credit_card' => array(
+                            'number' => '4417119669820331',
+                            'type' => 'visa',
+                            'expire_month' => 11,
+                            'expire_year' => 2018,
+                            'cvv2' => '874',
+                            'first_name' => 'Betsy',
+                            'last_name' => 'Buyer',
+                            'billing_address' => array(
+                                'line1' => '111 First Street',
+                                'city' => 'Saratoga',
+                                'state' => 'CA',
+                                'postal_code' => '95070',
+                                'country_code' => 'US'
+                            )
+                        )
+                     )
+                ),
+            ),
             'redirect_urls' => array(
                 'return_url' => $this->returnUrl,
                 'cancel_url' => $this->cancelUrl
@@ -474,37 +338,13 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
                     'description' => $this->description
                 )
             ),
-        ));
-
-        $this->client->expects($this->once())
-            ->method('createRequest')
-            ->with(
-                'POST',
-                $this->baseUrl.'/v1/payments/payment',
-                array(
-                    'Accept' => 'application/json',
-                    'Accept-Language' => 'en_US',
-                    'Authorization' => $this->accessToken->getTokenType().' '.$this->accessToken->getAccessToken(),
-                    'Content-Type' => 'application/json'
-                ),
-                $requestBody,
-                array(
-                    'debug' => $this->debug
-                )
-            )
-            ->will($this->returnValue($this->expectedRequest));
-
-        $this->client->expects($this->once())
-            ->method('send')
-            ->with($this->expectedRequest)
-            ->will($this->returnValue($this->expectedResponse));
+        );
+        $this->initBuilder($requestBody, 'authorize');
+        $this->initClient($requestBody);
 
         $payment = $this->service->authorize(
             $this->accessToken,
-            $this->total,
-            $this->currency,
-            $this->payer,
-            $this->description
+            $this->builder
         );
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
@@ -532,52 +372,44 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             ->method('getBody')
             ->will($this->returnValue($json));
     }
-}
 
-
-
-/*
-curl -v https://api.sandbox.paypal.com/v1/payments/payment \
--H "Content-Type:application/json" \
--H "Authorization: Bearer {accessToken}" \
--d '{
-  "intent":"sale",
-  "payer":{
-    "payment_method":"credit_card",
-    "funding_instruments":[
-      {
-        "credit_card":{
-          "number":"4417119669820331",
-          "type":"visa",
-          "expire_month":11,
-          "expire_year":2018,
-          "cvv2":"874",
-          "first_name":"Betsy",
-          "last_name":"Buyer",
-          "billing_address":{
-            "line1":"111 First Street",
-            "city":"Saratoga",
-            "state":"CA",
-            "postal_code":"95070",
-            "country_code":"US"
-          }
-        }
-      }
-    ]
-  },
-  "transactions":[
+    private function initBuilder($requestBody, $intent)
     {
-      "amount":{
-        "total":"7.47",
-        "currency":"USD",
-        "details":{
-          "subtotal":"7.41",
-          "tax":"0.03",
-          "shipping":"0.03"
-        }
-      },
-      "description":"This is the payment transaction description."
+        $this->builder = $this->getMockBuilder('PayPalRestApiClient\Builder\PaymentRequestBodyBuilder')
+            ->disableOriginalConstructor()
+            ->setMethods(array('build', 'setIntent'))
+            ->getMock();
+        $this->builder->expects($this->once())
+            ->method('setIntent')
+            ->with($intent);
+        $this->builder->expects($this->once())
+            ->method('build')
+            ->will($this->returnValue($requestBody));
     }
-  ]
-}'
-*/
+
+    private function initClient($requestBody, $uri = '/v1/payments/payment')
+    {
+        $this->client->expects($this->once())
+            ->method('createRequest')
+            ->with(
+                'POST',
+                $this->baseUrl.$uri,
+                array(
+                    'Accept' => 'application/json',
+                    'Accept-Language' => 'en_US',
+                    'Authorization' => $this->accessToken->getTokenType().' '.$this->accessToken->getAccessToken(),
+                    'Content-Type' => 'application/json'
+                ),
+                json_encode($requestBody),
+                array(
+                    'debug' => $this->debug
+                )
+            )
+            ->will($this->returnValue($this->expectedRequest));
+
+        $this->client->expects($this->once())
+            ->method('send')
+            ->with($this->expectedRequest)
+            ->will($this->returnValue($this->expectedResponse));
+    }
+}

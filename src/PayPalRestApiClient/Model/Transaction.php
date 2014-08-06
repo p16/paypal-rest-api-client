@@ -12,7 +12,7 @@ class Transaction
     /**
      * @see https://developer.paypal.com/docs/api/#transaction-object
      */
-    public function __construct(Amount $amount, $description = null, $itemList = array(), $relatedResources = array())
+    public function __construct(AmountInterface $amount, $description = null, $itemList = array(), $relatedResources = array())
     {
         $this->amount = $amount;
         $this->description = $description;
