@@ -48,7 +48,7 @@ class PaymentBuilder
         $info = isset($data['payer_info']) ? $data['payer_info'] : null;
         $fundingInstruments = isset($data['funding_instruments']) ? $data['funding_instruments'] : null;
 
-        return new Payer($data['payment_method'], $info, $fundingInstruments);
+        return new Payer($data['payment_method'], $fundingInstruments, $info);
     }
 
     private function buildTransaction($data)

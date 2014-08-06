@@ -2,7 +2,7 @@
 
 namespace PayPalRestApiClient\Model;
 
-class Payer
+class Payer implements PayerInterface
 {
     protected $paymentMethod;
     protected $info;
@@ -11,7 +11,7 @@ class Payer
     /**
      * @see https://developer.paypal.com/docs/api/#payer-object
      */
-    public function __construct($paymentMethod, $info = null, $fundingInstruments = null)
+    public function __construct($paymentMethod, $fundingInstruments = null, $info = null)
     {
         $this->paymentMethod = $paymentMethod;
         $this->info = $info;
