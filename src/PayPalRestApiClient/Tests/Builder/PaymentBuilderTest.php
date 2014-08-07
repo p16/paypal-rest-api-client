@@ -127,4 +127,20 @@ class PaymentBuilderTest extends \PHPUnit_Framework_TestCase
         $links = $payment->getLinks();
         $this->assertcount(3, $links);
     }
+
+    public function testBuildAuthorization()
+    {
+        $json = '{"id":"PAY-57J81996S0062005NKPR7UDQ","create_time":"2014-08-07T22:13:34Z","update_time":"2014-08-07T22:13:55Z","state":"approved","intent":"authorize","payer":{"payment_method":"credit_card","funding_instruments":[{"credit_card":{"type":"visa","number":"xxxxxxxxxxxx0331","expire_month":"11","expire_year":"2018","first_name":"Betsy","last_name":"Buyer","billing_address":{"line1":"111 First Street","city":"Saratoga","state":"CA","postal_code":"95070","country_code":"US"}}}]},"transactions":[{"amount":{"total":"12.35","currency":"EUR","details":{"subtotal":"12.35"}},"description":"my transaction","related_resources":[{"authorization":{"id":"88H73259FG903901N","create_time":"2014-08-07T22:13:34Z","update_time":"2014-08-07T22:13:55Z","amount":{"total":"12.35","currency":"EUR","details":{"subtotal":"12.35"}},"state":"authorized","parent_payment":"PAY-57J81996S0062005NKPR7UDQ","valid_until":"2014-09-05T22:13:34Z","links":[{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/88H73259FG903901N","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/88H73259FG903901N/capture","rel":"capture","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/88H73259FG903901N/void","rel":"void","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-57J81996S0062005NKPR7UDQ","rel":"parent_payment","method":"GET"}]}}]}],"links":[{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-57J81996S0062005NKPR7UDQ","rel":"self","method":"GET"}]}';
+        $data = json_decode($json, true);
+
+        $this->builder = new PaymentBuilder();
+        $payment = $this->builder->build($data);
+
+        $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
+
+        $this->assertEquals(
+            array('https://api.sandbox.paypal.com/v1/payments/authorization/88H73259FG903901N/capture'),
+            $payment->getCaptureUrls()
+        );
+    }
 }

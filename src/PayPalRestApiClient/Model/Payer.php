@@ -14,8 +14,8 @@ class Payer implements PayerInterface
     public function __construct($paymentMethod, $fundingInstruments = null, $info = null)
     {
         $this->paymentMethod = $paymentMethod;
-        $this->info = $info;
         $this->fundingInstruments = $fundingInstruments;
+        $this->info = $info;
     }
 
     public function getPaymentMethod()

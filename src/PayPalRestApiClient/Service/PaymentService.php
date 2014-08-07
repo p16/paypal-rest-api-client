@@ -28,7 +28,7 @@ class PaymentService
         $this->debug = $debug;
     }
 
-    public function capture(
+    public function execute(
         AccessToken $accessToken,
         Payment $payment,
         $payerId

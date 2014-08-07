@@ -15,6 +15,7 @@ class Payment
     protected $links;
     protected $executeUrl;
     protected $approvalUrl;
+    protected $captureUrls = array();
 
     public function __construct(
         $id,
@@ -48,6 +49,10 @@ class Payment
                 
                 case 'execute':
                     $this->executeUrl = $link->getHref();
+                    break;
+                
+                case 'capture':
+                    $this->captureUrls[] = $link->getHref();
                     break;
             }
         }
@@ -101,5 +106,10 @@ class Payment
     public function getApprovalUrl()
     {
         return $this->approvalUrl;
+    }
+
+    public function getCaptureUrls()
+    {
+        return $this->captureUrls;
     }
 }

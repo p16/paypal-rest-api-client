@@ -181,6 +181,49 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testCapturePayment()
     {
+        $this->markTestIncomplete();
+        // curl -v https://api.sandbox.paypal.com/v1/payments/authorization/9T287484DP554682S/capture \
+        // -H "Content-Type:application/json" \
+        // -H "Authorization: Bearer {accessToken}" \
+        // -d '{
+        //   "amount":{
+        //     "currency":"USD",
+        //     "total":"4.54"
+        //   },
+        //   "is_final_capture":true
+        // }'
+
+        // $json = '';
+        // $status = 200;
+        // $this->initResponse($status, $json);
+        // $this->initAccessToken('Bearer', '123abc123abc');
+
+        // $requestBody = array("payer_id" => "CBMFXGW3CHM7Q");
+        // $this->initClient($requestBody, '/v1/payments/payment/PAY-6T42818722685883WKPPAT6I/execute');
+
+        // $payment = $this->getMockBuilder('PayPalRestApiClient\Model\Payment')
+        //     ->disableOriginalConstructor()
+        //     ->getMock();
+        // $payment->expects($this->once())
+        //     ->method('getExecuteUrl')
+        //     ->will($this->returnValue(
+        //         'https://api.sandbox.paypal.com/v1/payments/payment/PAY-6T42818722685883WKPPAT6I/execute'
+        //     ));
+
+        // $payerId = "CBMFXGW3CHM7Q";
+
+
+        // $payment = $this->service->execute($this->accessToken, $payment, $payerId);
+
+        // $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
+        // $this->assertEquals('approved', $payment->getState());
+    }
+
+    /**
+     * @see https://developer.paypal.com/docs/api/#execute-an-approved-paypal-payment
+     */
+    public function testExecutePayment()
+    {
         $json = '{"id":"PAY-6T42818722685883WKPPAT6I","create_time":"2014-08-03T10:07:53Z","update_time":"2014-08-03T10:11:42Z","state":"approved","intent":"sale","payer":{"payment_method":"paypal","payer_info":{"email":"verticesbuyer@example.com","first_name":"vertices","last_name":"buyer","payer_id":"CBMFXGW3CHM7Q","shipping_address":{"line1":"Via del mare","line2":"","city":"Milano","state":"","postal_code":"60010","country_code":"IT","phone":"3213213211","recipient_name":"Fi Fi"}}},"transactions":[{"amount":{"total":"15.00","currency":"EUR","details":{"subtotal":"15.00"}},"description":"My fantastic transaction description","item_list":{"items":[{"name":"example","sku":"1","price":"5.00","currency":"EUR","quantity":"1"},{"name":"example","sku":"2","price":"3.00","currency":"EUR","quantity":"1"},{"name":"example","sku":"3","price":"7.00","currency":"EUR","quantity":"1"}],"shipping_address":{"recipient_name":"vertices buyer","line1":"Via del mare","line2":"","city":"Milano","state":"","phone":"3213213211","postal_code":"60010","country_code":"IT"}},"related_resources":[{"sale":{"id":"4P624962P1332762G","create_time":"2014-08-03T10:07:53Z","update_time":"2014-08-03T10:11:42Z","amount":{"total":"15.00","currency":"EUR"},"state":"completed","parent_payment":"PAY-6T42818722685883WKPPAT6I","links":[{"href":"https://api.sandbox.paypal.com/v1/payments/sale/4P624962P1332762G","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v1/payments/sale/4P624962P1332762G/refund","rel":"refund","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-6T42818722685883WKPPAT6I","rel":"parent_payment","method":"GET"}]}}]}],"links":[{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-6T42818722685883WKPPAT6I","rel":"self","method":"GET"}]}';
         $status = 200;
         $this->initResponse($status, $json);
@@ -201,7 +244,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $payerId = "CBMFXGW3CHM7Q";
 
 
-        $payment = $this->service->capture($this->accessToken, $payment, $payerId);
+        $payment = $this->service->execute($this->accessToken, $payment, $payerId);
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
         $this->assertEquals('approved', $payment->getState());
@@ -335,7 +378,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
     public function testAuthorizePaymentCreditCardMethod()
     {
         $status = 201;
-        $json = '{"id":"PAY-22N76619X87876426KPQAJFA","create_time":"2014-08-04T22:09:24Z","update_time":"2014-08-04T22:09:41Z","state":"approved","intent":"authorize","payer":{"payment_method":"credit_card","funding_instruments":[{"credit_card":{"type":"visa","number":"xxxxxxxxxxxx0331","expire_month":"11","expire_year":"2018","first_name":"Betsy","last_name":"Buyer","billing_address":{"line1":"111 First Street","city":"Saratoga","state":"CA","postal_code":"95070","country_code":"US"}}}]},"transactions":[{"amount":{"total":"15.00","currency":"EUR","details":{"subtotal":"15.00"}},"description":"My fantastic transaction description","related_resources":[{"authorization":{"id":"9H822632XT878342A","create_time":"2014-08-04T22:09:24Z","update_time":"2014-08-04T22:09:41Z","amount":{"total":"15.00","currency":"EUR","details":{"subtotal":"15.00"}},"state":"authorized","parent_payment":"PAY-22N76619X87876426KPQAJFA","valid_until":"2014-09-02T22:09:24Z","links":[{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/9H822632XT878342A","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/9H822632XT878342A/capture","rel":"capture","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/9H822632XT878342A/void","rel":"void","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-22N76619X87876426KPQAJFA","rel":"parent_payment","method":"GET"}]}}]}],"links":[{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-22N76619X87876426KPQAJFA","rel":"self","method":"GET"}]}';
+        $json = '{"id":"PAY-57J81996S0062005NKPR7UDQ","create_time":"2014-08-07T22:13:34Z","update_time":"2014-08-07T22:13:55Z","state":"approved","intent":"authorize","payer":{"payment_method":"credit_card","funding_instruments":[{"credit_card":{"type":"visa","number":"xxxxxxxxxxxx0331","expire_month":"11","expire_year":"2018","first_name":"Betsy","last_name":"Buyer","billing_address":{"line1":"111 First Street","city":"Saratoga","state":"CA","postal_code":"95070","country_code":"US"}}}]},"transactions":[{"amount":{"total":"12.35","currency":"EUR","details":{"subtotal":"12.35"}},"description":"my transaction","related_resources":[{"authorization":{"id":"88H73259FG903901N","create_time":"2014-08-07T22:13:34Z","update_time":"2014-08-07T22:13:55Z","amount":{"total":"12.35","currency":"EUR","details":{"subtotal":"12.35"}},"state":"authorized","parent_payment":"PAY-57J81996S0062005NKPR7UDQ","valid_until":"2014-09-05T22:13:34Z","links":[{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/88H73259FG903901N","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/88H73259FG903901N/capture","rel":"capture","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/88H73259FG903901N/void","rel":"void","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-57J81996S0062005NKPR7UDQ","rel":"parent_payment","method":"GET"}]}}]}],"links":[{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-57J81996S0062005NKPR7UDQ","rel":"self","method":"GET"}]}';
 
         $this->initResponse($status, $json);
         $this->initAccessToken('Bearer', '123abc123abc');
@@ -399,6 +442,10 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
         $this->assertEquals('approved', $payment->getState());
         $this->assertEquals('authorize', $payment->getIntent());
+        $this->assertEquals(
+            array('https://api.sandbox.paypal.com/v1/payments/authorization/88H73259FG903901N/capture'),
+            $payment->getCaptureUrls()
+        );
     }
 
     private function initAccessToken($type, $token)

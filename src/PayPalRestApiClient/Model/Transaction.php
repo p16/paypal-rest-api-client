@@ -2,7 +2,7 @@
 
 namespace PayPalRestApiClient\Model;
 
-class Transaction
+class Transaction implements TransactionInterface
 {
     protected $amount;
     protected $description;

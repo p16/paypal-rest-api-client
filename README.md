@@ -22,9 +22,9 @@ Features
 At the moment the only [PayPal REST API](https://developer.paypal.com/docs/api/) calls implemented are:
 
 - Require an access token: https://developer.paypal.com/docs/api/#authentication--headers
-- Create a payment (only with payment_method = "paypal"): https://developer.paypal.com/docs/api/#create-a-payment 
+- Create a payment (only with "paypal" and "credit_card" payment methods): https://developer.paypal.com/docs/api/#create-a-payment 
 - Execute a payment: https://developer.paypal.com/docs/api/#execute-an-approved-paypal-payment
-
+- Authorize a payment: https://developer.paypal.com/docs/integration/direct/capture-payment/
 
 Installation
 ------------
@@ -59,77 +59,44 @@ From the root folder run
 Using the library
 -----------------
 
-    $clientId = 'CLIENTID';
-    $secret = 'SECRET';
-
-    $this->debug = true;
     $this->baseUrl = 'https://api.sandbox.paypal.com';
     $this->returnUrl = 'http://example.com/success';
     $this->cancelUrl = 'http://example.com/cancel';
-    $this->total = 15.00;
-    $this->currency = 'EUR';
-    $this->description = 'My fantastic transaction description';
 
-    $this->shippingAddress = array(
-        'recipient_name' => 'Fi Fi',
-        'type' => 'residential',
-        'line1' => 'Via del mare',
-        'line2' => '',
-        'city' => 'Milano',
-        'country_code' => 'IT',
-        'postal_code' => '60010',
-        'state' => '',
-        'phone' => '3213213211',
-    );
-
-    $this->items = array(
-        array(
-            'quantity' => 1,
-            'name' => 'example',
-            'price' => '5.00',
-            'currency' => 'EUR',
-            'sku' => '1',
-        ),
-        array(
-            'quantity' => 1,
-            'name' => 'example',
-            'price' => '3.00',
-            'currency' => 'EUR',
-            'sku' => '2',
-        ),
-        array(
-            'quantity' => 1,
-            'name' => 'example',
-            'price' => '7.00',
-            'currency' => 'EUR',
-            'sku' => '3',
-        )
-    );
-    
-    $this->client = new \Guzzle\Http\Client();
+    $this->client = new Client();
 
     $repo = new AccessTokenRepository(
         $this->client,
-        'https://api.sandbox.paypal.com',
-        true
+        $this->baseUrl
     );
-    $token = $repo->getAccessToken($clientId, $secret);
+    $accessToken = $repo->getAccessToken($clientId, $secret);
 
-    $service = new PaymentService(
+    $paymentRequestBodyBuilder = new PaymentRequestBodyBuilder(
+        new PayerBuilder(),
+        new UrlsBuilder(),
+        new TransactionsBuilder()
+    );
+
+    $paymentService = new PaymentService(
         $this->client,
-        $this->baseUrl,
-        $this->returnUrl,
-        $this->cancelUrl,
-        $this->debug
+        $paymentRequestBodyBuilder,
+        $this->baseUrl
     );
-    $payment = $service->create(
+
+    $amount = new Amount('EUR', '12.35');
+    $transaction = new Transaction($amount, 'my transaction');
+
+    $payment = $paymentService->create(
         $accessToken,
-        $this->total,
-        $this->currency,
-        $this->description,
-        $this->items,
-        $this->shippingAddress
+        new Payer('paypal'),
+        array(
+            'return_url' => $this->returnUrl,
+            'cancel_url' => $this->cancelUrl
+        ),
+        array($transaction)
     );
+
+    var_dump($payment);
 
     $redirectUrl = $payment->getApprovalUrl();
 
@@ -138,13 +105,11 @@ Using the library
 
     $payerID = $_GET['PayerID'];
 
-    $service = new PaymentService(
+    $paymentService = new PaymentService(
         $this->client,
-        $this->baseUrl,
-        $this->returnUrl,
-        $this->cancelUrl,
-        $this->debug
+        $paymentRequestBodyBuilder,
+        $this->baseUrl
     );
-    $payment = $service->capture($accessToken, $payment, $payerId);
+    $payment = $service->execute($accessToken, $payment, $payerId);
 
     var_dump($payment);
