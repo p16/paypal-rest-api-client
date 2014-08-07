@@ -34,11 +34,15 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             ->setMethods(array('createRequest', 'send'))
             ->getMock();
 
+        $this->builder = $this->getMockBuilder('PayPalRestApiClient\Builder\PaymentRequestBodyBuilder')
+            ->disableOriginalConstructor()
+            ->setMethods(array('build'))
+            ->getMock();
+
         $this->service = new PaymentService(
             $this->client,
+            $this->builder,
             $this->baseUrl,
-            $this->returnUrl,
-            $this->cancelUrl,
             $this->debug
         );
     }
@@ -108,9 +112,18 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->initBuilder($requestBody, 'sale');
         $this->initClient($requestBody);
 
+        $payer = $payer = $this->getMock('PayPalRestApiClient\Model\PayerInterface');
+        $urls = array(
+            'return_url' => $this->returnUrl,
+            'cancel_url' => $this->cancelUrl
+        );
+        $transaction = $this->getMock('PayPalRestApiClient\Model\TransactionInterface');
+
         $payment = $this->service->create(
             $this->accessToken,
-            $this->builder
+            $payer,
+            $urls,
+            array($transaction)
         );
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
@@ -145,9 +158,18 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->initBuilder($requestBody, 'sale');
         $this->initClient($requestBody);
 
+        $payer = $payer = $this->getMock('PayPalRestApiClient\Model\PayerInterface');
+        $urls = array(
+            'return_url' => $this->returnUrl,
+            'cancel_url' => $this->cancelUrl
+        );
+        $transaction = $this->getMock('PayPalRestApiClient\Model\TransactionInterface');
+
         $payment = $this->service->create(
             $this->accessToken,
-            $this->builder
+            $payer,
+            $urls,
+            array($transaction)
         );
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
@@ -238,9 +260,18 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->initBuilder($requestBody, 'sale');
         $this->initClient($requestBody);
 
+        $payer = $payer = $this->getMock('PayPalRestApiClient\Model\PayerInterface');
+        $urls = array(
+            'return_url' => $this->returnUrl,
+            'cancel_url' => $this->cancelUrl
+        );
+        $transaction = $this->getMock('PayPalRestApiClient\Model\TransactionInterface');
+
         $payment = $this->service->create(
             $this->accessToken,
-            $this->builder
+            $payer,
+            $urls,
+            array($transaction)
         );
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
@@ -279,9 +310,18 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->initBuilder($requestBody, 'authorize');
         $this->initClient($requestBody);
 
+        $payer = $payer = $this->getMock('PayPalRestApiClient\Model\PayerInterface');
+        $urls = array(
+            'return_url' => $this->returnUrl,
+            'cancel_url' => $this->cancelUrl
+        );
+        $transaction = $this->getMock('PayPalRestApiClient\Model\TransactionInterface');
+
         $payment = $this->service->authorize(
             $this->accessToken,
-            $this->builder
+            $payer,
+            $urls,
+            array($transaction)
         );
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
@@ -342,9 +382,18 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->initBuilder($requestBody, 'authorize');
         $this->initClient($requestBody);
 
+        $payer = $payer = $this->getMock('PayPalRestApiClient\Model\PayerInterface');
+        $urls = array(
+            'return_url' => $this->returnUrl,
+            'cancel_url' => $this->cancelUrl
+        );
+        $transaction = $this->getMock('PayPalRestApiClient\Model\TransactionInterface');
+
         $payment = $this->service->authorize(
             $this->accessToken,
-            $this->builder
+            $payer,
+            $urls,
+            array($transaction)
         );
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
@@ -375,13 +424,6 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
 
     private function initBuilder($requestBody, $intent)
     {
-        $this->builder = $this->getMockBuilder('PayPalRestApiClient\Builder\PaymentRequestBodyBuilder')
-            ->disableOriginalConstructor()
-            ->setMethods(array('build', 'setIntent'))
-            ->getMock();
-        $this->builder->expects($this->once())
-            ->method('setIntent')
-            ->with($intent);
         $this->builder->expects($this->once())
             ->method('build')
             ->will($this->returnValue($requestBody));

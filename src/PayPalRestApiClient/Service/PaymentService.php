@@ -13,16 +13,18 @@ class PaymentService
 {
     protected $client;
     protected $baseUrl;
-    protected $returnUrl;
-    protected $cancelUrl;
+    protected $paymentRequestBodyBuilder;
     protected $debug;
 
-    public function __construct(Client $client, $baseUrl, $returnUrl, $cancelUrl, $debug = false)
-    {
+    public function __construct(
+        Client $client,
+        PaymentRequestBodyBuilder $paymentRequestBodyBuilder,
+        $baseUrl,
+        $debug = false
+    ) {
         $this->client = $client;
         $this->baseUrl = $baseUrl;
-        $this->returnUrl = $returnUrl;
-        $this->cancelUrl = $cancelUrl;
+        $this->paymentRequestBodyBuilder = $paymentRequestBodyBuilder;
         $this->debug = $debug;
     }
 
@@ -76,29 +78,44 @@ class PaymentService
         return $payment;
     }
 
-    public function authorize(AccessToken $accessToken, PaymentRequestBodyBuilder $paymentRequestBodyBuilder)
-    {
-        $paymentRequestBodyBuilder->setIntent('authorize');
+    public function authorize(
+        AccessToken $accessToken,
+        $payer,
+        $urls,
+        $transactions
+    ) {
+        $requestBody = $this->paymentRequestBodyBuilder->build(
+            'authorize',
+            $payer,
+            $urls,
+            $transactions
+        );
 
-        $request = $this->buildRequest($accessToken, $paymentRequestBodyBuilder);
+        $request = $this->buildRequest($accessToken, $requestBody);
 
         return $this->doSend($request);
     }
 
-    public function create(AccessToken $accessToken, PaymentRequestBodyBuilder $paymentRequestBodyBuilder)
-    {
-        $paymentRequestBodyBuilder->setIntent('sale');
+    public function create(
+        AccessToken $accessToken,
+        $payer,
+        $urls,
+        $transactions
+    ) {
+        $requestBody = $this->paymentRequestBodyBuilder->build(
+            'sale',
+            $payer,
+            $urls,
+            $transactions
+        );
 
-        $request = $this->buildRequest($accessToken, $paymentRequestBodyBuilder);
+        $request = $this->buildRequest($accessToken, $requestBody);
 
         return $this->doSend($request);
     }
 
-    protected function buildRequest(AccessToken $accessToken, PaymentRequestBodyBuilder $paymentRequestBodyBuilder)
+    protected function buildRequest(AccessToken $accessToken, array $requestBody)
     {
-        $data = $paymentRequestBodyBuilder->build();
-        $requestBody = json_encode($data);
-
         $request = $this->client->createRequest(
             'POST',
             $this->baseUrl.'/v1/payments/payment',
@@ -108,7 +125,7 @@ class PaymentService
                 'Authorization' => $accessToken->getTokenType().' '.$accessToken->getAccessToken(),
                 'Content-Type' => 'application/json'
             ),
-            $requestBody,
+            json_encode($requestBody),
             array(
                 'debug' => $this->debug
             )
