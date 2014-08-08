@@ -6,6 +6,8 @@ use Guzzle\Http\Client;
 use PayPalRestApiClient\Model\AccessToken;
 use PayPalRestApiClient\Model\Payment;
 use PayPalRestApiClient\Builder\PaymentRequestBodyBuilder;
+use PayPalRestApiClient\Builder\CaptureBuilder;
+use PayPalRestApiClient\Builder\AuthorizationBuilder;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use PayPalRestApiClient\Builder\PaymentBuilder;
 
@@ -128,10 +130,10 @@ class PaymentService
 
         $data = json_decode($response->getBody(), true);
 
-        $paymentBuilder = new PaymentBuilder();
-        $payment = $paymentBuilder->build($data);
+        $captureBuilder = new CaptureBuilder();
+        $capture = $captureBuilder->build($data);
 
-        return $payment;
+        return $capture;
     }
 
     public function authorize(
@@ -140,6 +142,7 @@ class PaymentService
         $urls,
         $transactions
     ) {
+
         $requestBody = $this->paymentRequestBodyBuilder->build(
             'authorize',
             $payer,
@@ -149,7 +152,20 @@ class PaymentService
 
         $request = $this->buildRequest($accessToken, $requestBody);
 
-        return $this->doSend($request);
+        $data = $this->doSend($request);
+
+        if ('paypal' === $data['payer']['payment_method']) {
+
+            $paymentBuilder = new PaymentBuilder();
+            $payment = $paymentBuilder->build($data);
+
+            return $payment;        
+        }
+
+        $authorizationBuilder = new AuthorizationBuilder();
+        $authorization = $authorizationBuilder->build($data);
+
+        return $authorization;        
     }
 
     public function create(
@@ -167,7 +183,12 @@ class PaymentService
 
         $request = $this->buildRequest($accessToken, $requestBody);
 
-        return $this->doSend($request);
+        $data = $this->doSend($request);
+
+        $paymentBuilder = new PaymentBuilder();
+        $payment = $paymentBuilder->build($data);
+
+        return $payment;        
     }
 
     protected function buildRequest(AccessToken $accessToken, array $requestBody)
@@ -214,11 +235,6 @@ class PaymentService
             );
         }
 
-        $data = json_decode($response->getBody(), true);
-
-        $paymentBuilder = new PaymentBuilder();
-        $payment = $paymentBuilder->build($data);
-
-        return $payment;        
+        return json_decode($response->getBody(), true);
     }
 }
