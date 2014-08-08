@@ -112,4 +112,13 @@ class Payment
     {
         return $this->captureUrls;
     }
+
+    public function getAmount()
+    {
+        if (count($transactions) <= 0) {
+            return null;
+        }
+
+        return $transactions[0]->getAmount();
+    }
 }

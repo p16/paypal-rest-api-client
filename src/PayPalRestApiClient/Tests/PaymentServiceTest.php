@@ -181,42 +181,39 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testCapturePayment()
     {
-        $this->markTestIncomplete();
-        // curl -v https://api.sandbox.paypal.com/v1/payments/authorization/9T287484DP554682S/capture \
-        // -H "Content-Type:application/json" \
-        // -H "Authorization: Bearer {accessToken}" \
-        // -d '{
-        //   "amount":{
-        //     "currency":"USD",
-        //     "total":"4.54"
-        //   },
-        //   "is_final_capture":true
-        // }'
+        $json = '{"id":"6BA17599X0950293U","create_time":"2013-05-06T22:32:24Z","update_time":"2013-05-06T22:32:25Z","amount":{"total":"4.54","currency":"USD"},"is_final_capture":true,"state":"completed","parent_payment":"PAY-44664305570317015KGEC5DI","links":[{"href":"https://api.sandbox.paypal.com/v1/payments/capture/6BA17599X0950293U","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v1/payments/capture/6BA17599X0950293U/refund","rel":"refund","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/5RA45624N3531924N","rel":"authorization","method":"GET"},{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-44664305570317015KGEC5DI","rel":"parent_payment","method":"GET"}]}';
+        $status = 200;
+        $this->initResponse($status, $json);
+        $this->initAccessToken('Bearer', '123abc123abc');
 
-        // $json = '';
-        // $status = 200;
-        // $this->initResponse($status, $json);
-        // $this->initAccessToken('Bearer', '123abc123abc');
+        $requestBody = array("amount" => array("total" => "4.54", "currency" => "USD"), "is_final_capture" => true);
+        $this->initClient($requestBody, '/v1/payments/authorization/6BA17599X0950293U/capture');
 
-        // $requestBody = array("payer_id" => "CBMFXGW3CHM7Q");
-        // $this->initClient($requestBody, '/v1/payments/payment/PAY-6T42818722685883WKPPAT6I/execute');
+        $amount = $this->getMock('PayPalRestApiClient\Model\AmountInterface');
+        $amount->expects($this->once())
+            ->method('getTotal')
+            ->will($this->returnValue('4.54'));
+        $amount->expects($this->once())
+            ->method('getCurrency')
+            ->will($this->returnValue('USD'));
 
-        // $payment = $this->getMockBuilder('PayPalRestApiClient\Model\Payment')
-        //     ->disableOriginalConstructor()
-        //     ->getMock();
-        // $payment->expects($this->once())
-        //     ->method('getExecuteUrl')
-        //     ->will($this->returnValue(
-        //         'https://api.sandbox.paypal.com/v1/payments/payment/PAY-6T42818722685883WKPPAT6I/execute'
-        //     ));
+        $payment = $this->getMockBuilder('PayPalRestApiClient\Model\Payment')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $payment->expects($this->once())
+            ->method('getAmount')
+            ->will($this->returnValue($amount));
+        $payment->expects($this->once())
+            ->method('getCaptureUrls')
+            ->will($this->returnValue(
+                array('https://api.sandbox.paypal.com/v1/payments/authorization/6BA17599X0950293U/capture')
+            ));
 
-        // $payerId = "CBMFXGW3CHM7Q";
+        $payment = $this->service->capture($this->accessToken, $payment);
 
-
-        // $payment = $this->service->execute($this->accessToken, $payment, $payerId);
-
-        // $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
-        // $this->assertEquals('approved', $payment->getState());
+        $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
+        $this->assertEquals('completer', $payment->getState());
+        $this->assertEquals(true, $payment->isFinalCapture());
     }
 
     /**
