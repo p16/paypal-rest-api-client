@@ -2,6 +2,6 @@
 
 namespace PayPalRestApiClient\Exception;
 
-class PaymentException extends \Exception
+class CallException extends \Exception
 {
 }

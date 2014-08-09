@@ -85,10 +85,10 @@ class AccessTokenRepositoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException PayPalRestApiClient\Exception\AccessTokenException
-     * @expectedExceptionMessage Cannot retrieve access token: response status 401 Unauthorized, reason 'invalid_client' Client secret does not match for this client
+     * @expectedException PayPalRestApiClient\Exception\CallException
+     * @expectedExceptionMessage Error requesting token: response status 401 Unauthorized,  reason 'invalid_client' Client secret does not match for this client
      */
-    public function testWrongResponseGivenShouldThrowPayPalAccessTokenException()
+    public function testWrongResponseGivenShouldThrowPayPalCallException()
     {
         $clientId = 'example';
         $secret = 'example';

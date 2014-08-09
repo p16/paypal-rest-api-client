@@ -4,7 +4,6 @@ namespace PayPalRestApiClient\Repository;
 
 use Guzzle\Http\Client;
 use PayPalRestApiClient\Model\AccessToken;
-use PayPalRestApiClient\Exception\AccessTokenException;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 
 /**
@@ -12,6 +11,8 @@ use Guzzle\Http\Exception\ClientErrorResponseException;
  */
 class AccessTokenRepository
 {
+    use \PayPalRestApiClient\Traits\RequestSender;
+
     protected $client;
     protected $baseUrl;
     protected $debug = false;
@@ -21,6 +22,11 @@ class AccessTokenRepository
         $this->client = $client;
         $this->baseUrl = $baseUrl;
         $this->debug = $debug;
+    }
+
+    protected function getClient()
+    {
+        return $this->client;
     }
 
     /**
@@ -44,28 +50,7 @@ class AccessTokenRepository
             )
         );
 
-        try {
-            $response = $this->client->send($request);
-        }
-        catch (ClientErrorResponseException $e) {
-
-            $response = $e->getResponse();
-            $details = json_decode($response->getBody(), true);
-
-            throw new AccessTokenException(
-                "Cannot retrieve access token: ".
-                "response status ".$response->getStatusCode()." ".$response->getReasonPhrase().", ".
-                "reason '".$details['error']."' ".$details['error_description']
-            );
-        }
-
-        if (200 != $response->getStatusCode()) {
-
-            throw new AccessTokenException(
-                "Cannot retrieve access token: ".
-                "response status ".$response->getStatusCode()." ".$response->getReasonPhrase()
-            );
-        }
+        $response = $this->send($request, $acceptedStatusCode = 200, 'Error requesting token:');
 
         $data = json_decode($response->getBody(), true);
 

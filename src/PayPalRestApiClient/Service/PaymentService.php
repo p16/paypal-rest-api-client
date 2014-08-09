@@ -13,6 +13,8 @@ use PayPalRestApiClient\Builder\PaymentBuilder;
 
 class PaymentService
 {
+    use \PayPalRestApiClient\Traits\RequestSender;
+
     protected $client;
     protected $baseUrl;
     protected $paymentRequestBodyBuilder;
@@ -28,6 +30,11 @@ class PaymentService
         $this->baseUrl = $baseUrl;
         $this->paymentRequestBodyBuilder = $paymentRequestBodyBuilder;
         $this->debug = $debug;
+    }
+
+    protected function getClient()
+    {
+        return $this->client;
     }
 
     public function execute(
@@ -50,28 +57,7 @@ class PaymentService
             )
         );
 
-        try {
-            $response = $this->client->send($request);
-        }
-        catch (ClientErrorResponseException $e) {
-
-            $response = $e->getResponse();
-            $details = json_decode($response->getBody(), true);
-
-            throw new PaymentException(
-                "Payment error: ".
-                "response status ".$response->getStatusCode()." ".$response->getReasonPhrase().", ".
-                "reason '".$details['error']."' ".$details['error_description']
-            );
-        }
-
-        if (200 != $response->getStatusCode()) {
-            throw new PaymentException(
-                "Payment error: ".
-                "response status ".$response->getStatusCode()." ".$response->getReasonPhrase()
-            );
-        }
-
+        $response = $this->send($request, 200, "Payment error:");
         $data = json_decode($response->getBody(), true);
 
         $paymentBuilder = new PaymentBuilder();
@@ -106,28 +92,7 @@ class PaymentService
             )
         );
 
-        try {
-            $response = $this->client->send($request);
-        }
-        catch (ClientErrorResponseException $e) {
-
-            $response = $e->getResponse();
-            $details = json_decode($response->getBody(), true);
-
-            throw new PaymentException(
-                "Payment error: ".
-                "response status ".$response->getStatusCode()." ".$response->getReasonPhrase().", ".
-                "reason '".$details['error']."' ".$details['error_description']
-            );
-        }
-
-        if (200 != $response->getStatusCode()) {
-            throw new PaymentException(
-                "Payment error: ".
-                "response status ".$response->getStatusCode()." ".$response->getReasonPhrase()
-            );
-        }
-
+        $response = $this->send($request, 200, "Payment error:");
         $data = json_decode($response->getBody(), true);
 
         $captureBuilder = new CaptureBuilder();
@@ -152,8 +117,9 @@ class PaymentService
 
         $request = $this->buildRequest($accessToken, $requestBody);
 
-        $data = $this->doSend($request);
+        $response = $this->send($request, 201, "Payment error:");
 
+        $data = json_decode($response->getBody(), true);
         if ('paypal' === $data['payer']['payment_method']) {
 
             $paymentBuilder = new PaymentBuilder();
@@ -183,7 +149,9 @@ class PaymentService
 
         $request = $this->buildRequest($accessToken, $requestBody);
 
-        $data = $this->doSend($request);
+        $response = $this->send($request, 201, "Payment error:");
+
+        $data = json_decode($response->getBody(), true);
 
         $paymentBuilder = new PaymentBuilder();
         $payment = $paymentBuilder->build($data);
@@ -209,32 +177,5 @@ class PaymentService
         );
 
         return $request;
-    }
-
-    protected function doSend($request)
-    {
-        try {
-            $response = $this->client->send($request);
-        }
-        catch (ClientErrorResponseException $e) {
-
-            $response = $e->getResponse();
-            $details = json_decode($response->getBody(), true);
-
-            throw new PaymentException(
-                "Payment error: ".
-                "response status ".$response->getStatusCode()." ".$response->getReasonPhrase().", ".
-                "reason '".$details['error']."' ".$details['error_description']
-            );
-        }
-
-        if (201 != $response->getStatusCode()) {
-            throw new PaymentException(
-                "Payment error: ".
-                "response status ".$response->getStatusCode()." ".$response->getReasonPhrase()
-            );
-        }
-
-        return json_decode($response->getBody(), true);
     }
 }
