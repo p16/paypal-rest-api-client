@@ -50,10 +50,6 @@ class Payment
                 case 'execute':
                     $this->executeUrl = $link->getHref();
                     break;
-                
-                case 'capture':
-                    $this->captureUrls[] = $link->getHref();
-                    break;
             }
         }
     }

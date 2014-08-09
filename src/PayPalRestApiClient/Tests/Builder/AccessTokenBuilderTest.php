@@ -2,11 +2,16 @@
 
 namespace PayPalRestApiClient\Tests;
 
-use PayPalRestApiClient\Model\AccessToken;
+use PayPalRestApiClient\Builder\AccessTokenBuilder;
 
-class AccessTokenTest extends \PHPUnit_Framework_TestCase
+class AccessTokenBuilderTest extends \PHPUnit_Framework_TestCase
 {
-    public function testFromArray()
+    public function setUp()
+    {
+        $this->builder = new AccessTokenBuilder();
+    }
+
+    public function testBuild()
     {
         $data = array(
             'scope' => "https://uri.paypal.com/services/subscriptions https://api.paypal.com/v1/payments/.* https://api.paypal.com/v1/vault/credit-card https://uri.paypal.com/services/applications/webhooks openid https://uri.paypal.com/services/invoicing https://api.paypal.com/v1/vault/credit-card/.*",
@@ -15,27 +20,26 @@ class AccessTokenTest extends \PHPUnit_Framework_TestCase
             'app_id' => "APP-80W284485P519543T",
             'expires_in' => 28800
         );
-        $accessToken = AccessToken::fromArray($data);
+        $accessToken = $this->builder->build($data);
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\AccessToken', $accessToken);
     }
 
     /**
-     * @expectedException PayPalRestApiClient\Exception\AccessTokenException
+     * @expectedException PayPalRestApiClient\Exception\BuilderException
      * @expectedExceptionMessage Mandatory data missing for: scope, access_token, token_type, app_id, expires_in
      */
-    public function testFromArrayValidationNoScope()
+    public function testBuildValidationNoScope()
     {
-        $data = array(
-        );
-        $accessToken = AccessToken::fromArray($data);
+        $data = array();
+        $accessToken = $this->builder->build($data);
     }
 
     /**
-     * @expectedException PayPalRestApiClient\Exception\AccessTokenException
+     * @expectedException PayPalRestApiClient\Exception\BuilderException
      * @expectedExceptionMessage access_token is mandatory and should not be empty
      */
-    public function testFromArrayValidationEmptyAccessToken()
+    public function testBuildValidationEmptyAccessToken()
     {
         $data = array(
             'scope' => "https://uri.paypal.com/services/subscriptions https://api.paypal.com/v1/payments/.* https://api.paypal.com/v1/vault/credit-card https://uri.paypal.com/services/applications/webhooks openid https://uri.paypal.com/services/invoicing https://api.paypal.com/v1/vault/credit-card/.*",
@@ -44,6 +48,6 @@ class AccessTokenTest extends \PHPUnit_Framework_TestCase
             'app_id' => "APP-80W284485P519543T",
             'expires_in' => 28800
         );
-        $accessToken = AccessToken::fromArray($data);
+        $accessToken = $this->builder->build($data);
     }
 }

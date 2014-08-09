@@ -120,18 +120,18 @@ class PaymentService
         $response = $this->send($request, 201, "Payment error:");
 
         $data = json_decode($response->getBody(), true);
-        if ('paypal' === $data['payer']['payment_method']) {
+        if ('credit_card' === $data['payer']['payment_method']) {
 
-            $paymentBuilder = new PaymentBuilder();
-            $payment = $paymentBuilder->build($data);
+            $authorizationBuilder = new AuthorizationBuilder();
+            $authorization = $authorizationBuilder->build($data);
 
-            return $payment;        
+            return $authorization;        
         }
 
-        $authorizationBuilder = new AuthorizationBuilder();
-        $authorization = $authorizationBuilder->build($data);
+        $paymentBuilder = new PaymentBuilder();
+        $payment = $paymentBuilder->build($data);
 
-        return $authorization;        
+        return $payment;        
     }
 
     public function create(

@@ -18,6 +18,10 @@ class AuthorizationBuilder
             throw new BuilderException('Mandatory data missing for: '.implode(', ', $diff));
         }
 
+        if (empty($data['id'])) {
+            throw new BuilderException('id is mandatory and should not be empty');
+        }
+
         $capture = new Authorization(
             $data['id'],
             $data['create_time'],

@@ -3,7 +3,7 @@
 namespace PayPalRestApiClient\Repository;
 
 use Guzzle\Http\Client;
-use PayPalRestApiClient\Model\AccessToken;
+use PayPalRestApiClient\Builder\AccessTokenBuilder;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 
 /**
@@ -51,9 +51,10 @@ class AccessTokenRepository
         );
 
         $response = $this->send($request, $acceptedStatusCode = 200, 'Error requesting token:');
-
         $data = json_decode($response->getBody(), true);
 
-        return AccessToken::fromArray($data);
+        $builder = new AccessTokenBuilder();
+
+        return $builder->build($data);
     }
 }

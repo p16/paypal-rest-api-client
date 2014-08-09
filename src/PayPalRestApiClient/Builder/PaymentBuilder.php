@@ -21,17 +21,6 @@ class PaymentBuilder
             throw new BuilderException('Mandatory data missing for: '.implode(', ', $diff));
         }
 
-        if ($data['state'] == 'approved' && $data['intent'] == 'authorize') {
-            foreach ($data['transactions'] as $transaction) {
-                foreach ($transaction['related_resources'] as $relatedResources) {
-                    $data['links'] = array_merge(
-                        $data['links'],
-                        $relatedResources['authorization']['links']
-                    );
-                }
-            }
-        }
-
         $payment = new Payment(
             $data['id'],
             $data['create_time'],

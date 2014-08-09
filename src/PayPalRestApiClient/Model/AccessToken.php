@@ -15,36 +15,13 @@ class AccessToken
     /**
      * @see https://developer.paypal.com/docs/api/#authentication--headers
      */
-    private function __construct($accessToken, $tokenType, $appId, $expiresIn, $scope)
+    public function __construct($accessToken, $tokenType, $appId, $expiresIn, $scope)
     {
         $this->accessToken = $accessToken;
         $this->tokenType = $tokenType;
         $this->appId = $appId;
         $this->expiresIn = $expiresIn;
         $this->scope = $scope;
-    }
-
-    public static function fromArray(array $data)
-    {
-        $mandatoryKeys = array(
-            'scope', 'access_token', 'token_type', 'app_id', 'expires_in',
-        );
-        $diff = array_diff($mandatoryKeys, array_keys($data));
-        if (count($diff) > 0) {
-            throw new AccessTokenException('Mandatory data missing for: '.implode(', ', $diff));
-        }
-
-        if (empty($data['access_token'])) {
-            throw new AccessTokenException('access_token is mandatory and should not be empty');
-        }
-
-        return new self(
-            $data['access_token'],
-            $data['token_type'],
-            $data['app_id'],
-            $data['expires_in'],
-            $data['scope']
-        );
     }
 
     public function getAccessToken()
