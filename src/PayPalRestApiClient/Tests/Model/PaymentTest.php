@@ -47,4 +47,9 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
             $payment->getApprovalUrl()
         );
     }
+
+    public function testGetAmount()
+    {
+        $this->markTestIncomplete();
+    }
 }

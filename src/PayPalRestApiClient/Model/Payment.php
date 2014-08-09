@@ -113,10 +113,10 @@ class Payment
 
     public function getAmount()
     {
-        if (count($transactions) <= 0) {
+        if (count($this->transactions) <= 0) {
             return null;
         }
 
-        return $transactions[0]->getAmount();
+        return $this->transactions[0]->getAmount();
     }
 }

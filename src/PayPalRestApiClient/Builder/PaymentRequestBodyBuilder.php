@@ -29,8 +29,8 @@ class PaymentRequestBodyBuilder
         $requestBody = array();
         $requestBody['intent'] = $this->intent;
         $requestBody['payer'] = $this->payerBuilder->buildArray($payer);
-        $requestBody['redirect_urls'] = $this->urlsBuilder->buildArray($urls);
         $requestBody['transactions'] = $this->transactionsBuilder->buildArray($transactions);
+        $requestBody['redirect_urls'] = $this->urlsBuilder->buildArray($urls);
 
         return $requestBody;
     }
