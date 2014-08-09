@@ -24,7 +24,7 @@ At the moment the only [PayPal REST API](https://developer.paypal.com/docs/api/)
 - Require an access token: https://developer.paypal.com/docs/api/#authentication--headers
 - Create a payment (only with "paypal" and "credit_card" payment methods): https://developer.paypal.com/docs/api/#create-a-payment 
 - Execute a payment: https://developer.paypal.com/docs/api/#execute-an-approved-paypal-payment
-- Authorize a payment: https://developer.paypal.com/docs/integration/direct/capture-payment/
+- Authorize and capture a payment: https://developer.paypal.com/docs/integration/direct/capture-payment/
 
 Installation
 ------------
@@ -96,7 +96,9 @@ Using the library
         array($transaction)
     );
 
-    var_dump($payment);
+    $_SESSION['payment_data'] = $payment->getPaypalData();
+    // or
+    // $_SESSION['payment_data'] = serialize($payment);
 
     $redirectUrl = $payment->getApprovalUrl();
 
@@ -110,6 +112,13 @@ Using the library
         $paymentRequestBodyBuilder,
         $this->baseUrl
     );
-    $payment = $service->execute($accessToken, $payment, $payerId);
+
+    $paymentBuilder = new PaymentBuilder();
+    $originalPayment = $paymentBuilder->build($_SESSION['payment_data']);
+    // or
+    // $originalPayment = unserialize($_SESSION['payment_data']);
+
+
+    $payment = $service->execute($accessToken, $originalPayment, $payerId);
 
     var_dump($payment);

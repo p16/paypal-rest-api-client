@@ -31,6 +31,7 @@ class PaymentBuilder
             $this->buildTransactions($data['transactions']),
             $this->buildLinks($data['links'])
         );
+        $payment->setPaypalData($data);
 
         return $payment;
     }

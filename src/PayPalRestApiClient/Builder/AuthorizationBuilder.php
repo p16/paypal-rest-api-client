@@ -22,7 +22,7 @@ class AuthorizationBuilder
             throw new BuilderException('id is mandatory and should not be empty');
         }
 
-        $capture = new Authorization(
+        $authorization = new Authorization(
             $data['id'],
             $data['create_time'],
             $data['update_time'],
@@ -32,7 +32,8 @@ class AuthorizationBuilder
             $data['transactions'],
             $data['links']
         );
+        $authorization->setPaypalData($data);
 
-        return $capture;
+        return $authorization;
     }
 }

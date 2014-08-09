@@ -6,6 +6,8 @@ use PayPalRestApiClient\Exception\AccessTokenException;
 
 class AccessToken
 {
+    use \PayPalRestApiClient\Traits\PaypalData;
+
     protected $scope;
     protected $accessToken;
     protected $tokenType;

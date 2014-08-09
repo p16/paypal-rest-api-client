@@ -4,6 +4,8 @@ namespace PayPalRestApiClient\Model;
 
 class Capture
 {
+    use \PayPalRestApiClient\Traits\PaypalData;
+
     protected $id;
     protected $createTime;
     protected $updateTime;

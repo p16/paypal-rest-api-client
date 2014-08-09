@@ -21,12 +21,15 @@ class AccessTokenBuilder
             throw new BuilderException('access_token is mandatory and should not be empty');
         }
 
-        return new AccessToken(
+        $accessToken = new AccessToken(
             $data['access_token'],
             $data['token_type'],
             $data['app_id'],
             $data['expires_in'],
             $data['scope']
         );
+        $accessToken->setPaypalData($data);
+
+        return $accessToken;
     }
 }

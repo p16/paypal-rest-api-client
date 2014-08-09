@@ -28,6 +28,7 @@ class CaptureBuilder
             $data['parent_payment'],
             $data['links']
         );
+        $capture->setPaypalData($data);
 
         return $capture;
     }
