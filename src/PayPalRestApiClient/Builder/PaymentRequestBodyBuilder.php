@@ -12,13 +12,13 @@ class PaymentRequestBodyBuilder
     protected $transactions;
 
     public function __construct(
-        PayerBuilder $payerBuilder,
-        UrlsBuilder $urlsBuilder,
-        TransactionsBuilder $transactionsBuilder
+        PayerBuilder $payerBuilder = null,
+        UrlsBuilder $urlsBuilder = null,
+        TransactionsBuilder $transactionsBuilder = null
     ) {
-        $this->payerBuilder = $payerBuilder;
-        $this->urlsBuilder = $urlsBuilder;
-        $this->transactionsBuilder = $transactionsBuilder;
+        $this->payerBuilder = is_null($payerBuilder) ? new PayerBuilder() : $payerBuilder;
+        $this->urlsBuilder = is_null($urlsBuilder) ? new UrlsBuilder() : $urlsBuilder;
+        $this->transactionsBuilder = is_null($transactionsBuilder) ? new TransactionsBuilder() : $transactionsBuilder;
     }
 
     public function build($intent, $payer, $urls, $transactions)

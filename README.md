@@ -71,11 +71,7 @@ Using the library
     );
     $accessToken = $repo->getAccessToken($clientId, $secret);
 
-    $paymentRequestBodyBuilder = new PaymentRequestBodyBuilder(
-        new PayerBuilder(),
-        new UrlsBuilder(),
-        new TransactionsBuilder()
-    );
+    $paymentRequestBodyBuilder = new PaymentRequestBodyBuilder();
 
     $paymentService = new PaymentService(
         $this->client,
@@ -106,6 +102,8 @@ Using the library
     /* coming back from PayPal http://example.com/success?token=EC-9VK533621R3302713&PayerID=CBMFXGW3CHM7Q */
 
     $payerID = $_GET['PayerID'];
+
+    $paymentRequestBodyBuilder = new PaymentRequestBodyBuilder();
 
     $paymentService = new PaymentService(
         $this->client,
