@@ -470,7 +470,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
     {
         $this->builder->expects($this->once())
             ->method('build')
-            ->will($this->returnValue($requestBody));
+            ->will($this->returnValue(json_encode($requestBody)));
     }
 
     private function initClient($requestBody, $uri = '/v1/payments/payment')

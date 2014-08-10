@@ -79,8 +79,20 @@ Using the library
         $this->baseUrl
     );
 
+    $this->item_list = array(
+        'items' => array(
+            array(
+                'quantity' => 1,
+                'name' => 'product name',
+                'price' => '12.35',
+                'currency' => 'EUR',
+                'sku' => '1233456789',
+            ),
+        )
+    );
+
     $amount = new Amount('EUR', '12.35');
-    $transaction = new Transaction($amount, 'my transaction');
+    $transaction = new Transaction($amount, 'my transaction', $this->item_list);
 
     $payment = $paymentService->create(
         $accessToken,

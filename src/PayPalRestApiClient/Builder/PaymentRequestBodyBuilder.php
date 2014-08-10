@@ -21,7 +21,7 @@ class PaymentRequestBodyBuilder
         $this->transactionsBuilder = is_null($transactionsBuilder) ? new TransactionsBuilder() : $transactionsBuilder;
     }
 
-    public function build($intent, $payer, $urls, $transactions)
+    public function build($intent, $payer, $urls, $transactions, $returnArray = false)
     {
         $this->assertIntent($intent);
         $this->intent = $intent;
@@ -32,7 +32,11 @@ class PaymentRequestBodyBuilder
         $requestBody['transactions'] = $this->transactionsBuilder->buildArray($transactions);
         $requestBody['redirect_urls'] = $this->urlsBuilder->buildArray($urls);
 
-        return $requestBody;
+        if ($returnArray) {
+            return $requestBody;
+        }
+
+        return json_encode($requestBody);
     }
 
     private function assertIntent($intent)

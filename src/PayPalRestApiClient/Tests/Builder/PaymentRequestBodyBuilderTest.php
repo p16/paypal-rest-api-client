@@ -74,7 +74,8 @@ class PaymentRequestBodyBuilderTest extends \PHPUnit_Framework_TestCase
             'authorize',
             $payer,
             array('return_url' => 'url', 'cancel_url' => 'url'),
-            array($transaction)
+            array($transaction),
+            true
         );
 
         $this->assertEquals($expectedData, $data);

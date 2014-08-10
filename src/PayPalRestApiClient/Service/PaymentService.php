@@ -159,7 +159,7 @@ class PaymentService
         return $payment;        
     }
 
-    protected function buildRequest(AccessToken $accessToken, array $requestBody)
+    protected function buildRequest(AccessToken $accessToken, $requestBody)
     {
         $request = $this->client->createRequest(
             'POST',
@@ -170,7 +170,7 @@ class PaymentService
                 'Authorization' => $accessToken->getTokenType().' '.$accessToken->getAccessToken(),
                 'Content-Type' => 'application/json'
             ),
-            json_encode($requestBody),
+            $requestBody,
             array(
                 'debug' => $this->debug
             )
