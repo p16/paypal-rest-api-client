@@ -19,10 +19,21 @@ trait RequestSender
             $response = $e->getResponse();
             $details = json_decode($response->getBody(), true);
 
+            $reason = implode(
+                ', ',
+                array_map(
+                    function ($vvalue, $key) {
+                        return $key . ': ' . $vvalue;
+                    }, 
+                    $details,
+                    array_keys($details)
+                )
+            );
+
             throw new CallException(
                 $errorLabel.
                 " response status ".$response->getStatusCode()." ".$response->getReasonPhrase().", ".
-                " reason '".$details['error']."' ".$details['error_description']
+                " reason: ".$reason
             );
         }
 
