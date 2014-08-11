@@ -6,7 +6,7 @@ trait PaypalData
 {
     protected $paypalData;
 
-    public function setPaypalData($data)
+    public function setPaypalData(array $data)
     {
         $this->paypalData = $data;
     }
