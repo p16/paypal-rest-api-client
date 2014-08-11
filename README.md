@@ -144,5 +144,5 @@ A [Json Schema validator](https://github.com/justinrainbow/json-schema) is used 
 
 **TO-DO for release 0.1**
 
-1. Wrinte classes and methods documentation
+1. Write classes and methods documentation
 2. Move PayPalJsonSchemaValidator into a standalone repo (?)
