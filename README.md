@@ -144,13 +144,14 @@ A [Json Schema validator](https://github.com/justinrainbow/json-schema) is used 
 
 **TO-DO for release 0.1**
 
-2. Move PayPalJsonSchemaValidator into a standalone repo (?)
+2. Add authorization and capture of a payment with paypal payment method
 
 **TO-DO for release 0.2**
 
-1. Make the builder aware of the PayPalJsonSchemaValidator, so that they can validate what they are building when building from/to json
+1. Move PayPalJsonSchemaValidator into a standalone repo (?)
 
-2. Add validation to model classes (?)
+2. Make the builder aware of the PayPalJsonSchemaValidator, so that they can validate what they are building when building from/to json
 
-3. Add authorization and capture of a payment with paypal payment method
+3. Add validation to model classes (?)
+
 
