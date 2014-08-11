@@ -17,8 +17,7 @@ class PaymentAuthorization
     protected $payer;
     protected $transactions;
     protected $links;
-
-    protected $captureUrls = array();
+    protected $captureUrl;
 
     /**
      * Construct 
@@ -70,7 +69,7 @@ class PaymentAuthorization
         foreach ($links as $link) {
             switch ($link['rel']) {
                 case 'capture':
-                    $this->captureUrls[] = $link['href'];
+                    $this->captureUrl = $link['href'];
                     break;
             }
         }
@@ -111,8 +110,8 @@ class PaymentAuthorization
      *
      * @return array
      */
-    public function getCaptureUrls()
+    public function getCaptureUrl()
     {
-        return $this->captureUrls;
+        return $this->captureUrl;
     }
 }

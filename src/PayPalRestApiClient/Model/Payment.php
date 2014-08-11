@@ -20,7 +20,7 @@ class Payment
 
     protected $executeUrl;
     protected $approvalUrl;
-    protected $captureUrls = array();
+    protected $captureUrl;
 
     /**
      * Construct 
@@ -72,7 +72,7 @@ class Payment
                     break;
 
                 case 'capture':
-                    $this->captureUrls[] = $link['href'];
+                    $this->captureUrl = $link['href'];
                     break;
             }
         }
@@ -138,9 +138,9 @@ class Payment
      *
      * @return string
      */
-    public function getCaptureUrls()
+    public function getCaptureUrl()
     {
-        return $this->captureUrls;
+        return $this->captureUrl;
     }
 
     /**

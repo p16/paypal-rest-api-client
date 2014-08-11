@@ -110,7 +110,7 @@ class PaymentService
 
         $request = $this->client->createRequest(
             'POST',
-            $payment->getCaptureUrls()[0],
+            $payment->getCaptureUrl(),
             array(
                 'Accept' => 'application/json',
                 'Accept-Language' => 'en_US',

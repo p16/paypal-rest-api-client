@@ -70,8 +70,8 @@ class PaymentAuthorizationTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(
-            array('https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906/capture'),
-            $obj->getCaptureUrls()
+            'https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906/capture',
+            $obj->getCaptureUrl()
         );
     }
 }

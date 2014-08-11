@@ -33,7 +33,7 @@ class PaymentBuilder
         );
         $diff = array_diff($mandatoryKeys, array_keys($data));
         if (count($diff) > 0) {
-            throw new BuilderException('Mandatory data missing for: '.implode(', ', $diff));
+            throw new BuilderException('Mandatory data missing for payment: '.implode(', ', $diff));
         }
 
         $payment = new Payment(
@@ -58,7 +58,7 @@ class PaymentBuilder
         );
         $diff = array_diff($mandatoryKeys, array_keys($data));
         if (count($diff) > 0) {
-            throw new BuilderException('Mandatory data missing for: '.implode(', ', $diff));
+            throw new BuilderException('Mandatory data missing for payer: '.implode(', ', $diff));
         }
 
         $info = isset($data['payer_info']) ? $data['payer_info'] : null;
@@ -76,7 +76,7 @@ class PaymentBuilder
 
         if ( ! isset($data['amount']['currency']) || ! isset($data['amount']['total']))
         {
-            throw new BuilderException('Mandatory data missing for: amount currency or total');
+            throw new BuilderException('Mandatory data missing for amount: currency or total');
         }
 
         $details = isset($data['amount']['details']) ? $data['amount']['details'] : null;
@@ -106,7 +106,7 @@ class PaymentBuilder
         );
         $diff = array_diff($mandatoryKeys, array_keys($data));
         if (count($diff) > 0) {
-            throw new BuilderException('Mandatory data missing for: '.implode(', ', $diff));
+            throw new BuilderException('Mandatory data missing for link: '.implode(', ', $diff));
         }
 
         return new Link($data['href'], $data['rel'], $data['method']);

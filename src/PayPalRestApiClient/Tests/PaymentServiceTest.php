@@ -204,9 +204,9 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             ->method('getAmount')
             ->will($this->returnValue($amount));
         $payment->expects($this->once())
-            ->method('getCaptureUrls')
+            ->method('getCaptureUrl')
             ->will($this->returnValue(
-                array('https://api.sandbox.paypal.com/v1/payments/authorization/6BA17599X0950293U/capture')
+                'https://api.sandbox.paypal.com/v1/payments/authorization/6BA17599X0950293U/capture'
             ));
 
         $capture = $this->service->capture($this->accessToken, $payment);
@@ -367,7 +367,6 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
         $this->assertEquals('created', $payment->getState());
         $this->assertEquals('authorize', $payment->getIntent());
-        $this->assertEquals(array(), $payment->getCaptureUrls());
     }
 
     /**
@@ -441,9 +440,19 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('approved', $payment->getState());
         $this->assertEquals('authorize', $payment->getIntent());
         $this->assertEquals(
-            array('https://api.sandbox.paypal.com/v1/payments/authorization/6JK78052MJ7446007/capture'),
-            $payment->getCaptureUrls()
+            'https://api.sandbox.paypal.com/v1/payments/authorization/6JK78052MJ7446007/capture',
+            $payment->getCaptureUrl()
         );
+    }
+
+    public function testCompleteAuthorizationAndCaptureWithPaypalMethod()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testCompleteAuthorizationAndCaptureWithCreditCardMethod()
+    {
+        $this->markTestIncomplete();
     }
 
     private function initAccessToken($type, $token)
@@ -498,15 +507,5 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             ->method('send')
             ->with($this->expectedRequest)
             ->will($this->returnValue($this->expectedResponse));
-    }
-
-    public function testCompleteAuthorizationAndCaptureWithPaypalMethod()
-    {
-        $this->markTestIncomplete();
-    }
-
-    public function testCompleteAuthorizationAndCaptureWithCreditCardMethod()
-    {
-        $this->markTestIncomplete();
     }
 }
