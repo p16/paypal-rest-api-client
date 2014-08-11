@@ -10,6 +10,8 @@ use PayPalRestApiClient\Builder\CaptureBuilder;
 use PayPalRestApiClient\Builder\AuthorizationBuilder;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use PayPalRestApiClient\Builder\PaymentBuilder;
+use PayPalRestApiClient\Exception\BuilderException;
+use PayPalRestApiClient\Validator\PayPalJsonSchemaValidator;
 
 class PaymentService
 {
@@ -115,6 +117,8 @@ class PaymentService
             $transactions
         );
 
+        $this->assertReqeustJsonSchema($requestBody);
+
         $request = $this->buildRequest($accessToken, $requestBody);
 
         $response = $this->send($request, 201, "Payment error:");
@@ -147,6 +151,8 @@ class PaymentService
             $transactions
         );
 
+        $this->assertReqeustJsonSchema($requestBody);
+
         $request = $this->buildRequest($accessToken, $requestBody);
 
         $response = $this->send($request, 201, "Payment error:");
@@ -157,6 +163,19 @@ class PaymentService
         $payment = $paymentBuilder->build($data);
 
         return $payment;        
+    }
+
+    protected function assertReqeustJsonSchema($requestBody)
+    {
+        $validator = new PayPalJsonSchemaValidator('payment_request.json', json_decode($requestBody));
+        if ( ! $validator->isValid()) {
+            $errorString = '';
+            foreach ($validator->getErrors() as $error) {
+                $errorString .= sprintf("[%s] %s - ", $error['property'], $error['message']);
+            }
+
+            throw new BuilderException("Request body is not valid: $errorString");
+        }
     }
 
     protected function buildRequest(AccessToken $accessToken, $requestBody)

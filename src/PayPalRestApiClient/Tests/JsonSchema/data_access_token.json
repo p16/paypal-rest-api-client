@@ -1,0 +1,7 @@
+{
+  "scope": "https://api.paypal.com/v1/payments/.* https://api.paypal.com/v1/vault/credit-card https://api.paypal.com/v1/vault/credit-card/.*",
+  "access_token": "EEwJ6tF9x5WCIZDYzyZGaz6Khbw7raYRIBV_WxVvgmsG",
+  "token_type": "Bearer",
+  "app_id": "APP-6XR95014BA15863X",
+  "expires_in": 28800
+}

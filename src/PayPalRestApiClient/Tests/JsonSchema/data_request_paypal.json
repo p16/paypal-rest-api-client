@@ -1,0 +1,55 @@
+{
+    "intent":"sale",
+    "payer":{
+        "payment_method":"paypal"
+    },
+    "redirect_urls":{
+        "return_url":"http:\/\/example.com\/success",
+        "cancel_url":"http:\/\/example.com\/cancel"
+    },
+    "transactions":[
+        {
+            "amount":{
+                "total":"15",
+                "currency":"EUR"
+            },
+            "description":"My fantastic transaction description",
+            "item_list":{
+                "items":[
+                    {
+                        "quantity":"1",
+                        "name":"example",
+                        "price":"5.00",
+                        "currency":"EUR",
+                        "sku":"1"
+                    },
+                    {
+                        "quantity":"1",
+                        "name":"example",
+                        "price":"3.00",
+                        "currency":"EUR",
+                        "sku":"2"
+                    },
+                    {
+                        "quantity":"1",
+                        "name":"example",
+                        "price":"7.00",
+                        "currency":"EUR",
+                        "sku":"3"
+                    }
+                ],
+                "shipping_address":{
+                    "recipient_name":"Fi Fi",
+                    "type":"residential",
+                    "line1":"Via del mare",
+                    "line2":"",
+                    "city":"Milano",
+                    "country_code":"IT",
+                    "postal_code":"60010",
+                    "state":"",
+                    "phone":"3213213211"
+                }
+            }
+        }
+    ]
+}

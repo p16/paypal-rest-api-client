@@ -12,7 +12,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->baseUrl = 'https://api.sandbox.paypal.com';
         $this->returnUrl = 'http://example.com/success';
         $this->cancelUrl = 'http://example.com/cancel';
-        $this->total = 15.00;
+        $this->total = "15.00";
         $this->currency = 'EUR';
         $this->description = 'My fantastic transaction description';
 
@@ -73,21 +73,21 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
                     'item_list' => array(
                         'items' => array(
                             array(
-                                'quantity' => 1,
+                                'quantity' => '1',
                                 'name' => 'example',
                                 'price' => '5.00',
                                 'currency' => 'EUR',
                                 'sku' => '1',
                             ),
                             array(
-                                'quantity' => 1,
+                                'quantity' => '1',
                                 'name' => 'example',
                                 'price' => '3.00',
                                 'currency' => 'EUR',
                                 'sku' => '2',
                             ),
                             array(
-                                'quantity' => 1,
+                                'quantity' => '1',
                                 'name' => 'example',
                                 'price' => '7.00',
                                 'currency' => 'EUR',
