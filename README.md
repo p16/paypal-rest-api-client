@@ -57,8 +57,10 @@ From the root folder run
     phpunit -c .
 
 
-Using the library
------------------
+Documentation
+-------------
+
+**Using the library**
 
     $this->baseUrl = 'https://api.sandbox.paypal.com';
     $this->returnUrl = 'http://example.com/success';
@@ -133,3 +135,14 @@ Using the library
     $payment = $service->execute($accessToken, $originalPayment, $payerId);
 
     var_dump($payment);
+
+
+**PayPal Json schema validation**
+
+A [Json Schema validator](https://github.com/justinrainbow/json-schema) is used to validate a call request body. You can find all the available schema definition [here](src/PayPalRestApiClient/Validator/schema).
+
+
+**TO-DO**
+
+1. Wrinte classes and methods documentation
+2. Move PayPalJsonSchemaValidator into a standalone repo (?)
