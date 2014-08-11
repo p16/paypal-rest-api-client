@@ -2,7 +2,10 @@
 
 namespace PayPalRestApiClient\Model;
 
-class Authorization
+/**
+ * The PaymentAuthorization class represents a paypal payment authorization object
+ */
+class PaymentAuthorization
 {
     use \PayPalRestApiClient\Traits\PaypalData;
 
@@ -15,10 +18,25 @@ class Authorization
     protected $transactions;
     protected $links;
 
-    protected $captureUrl;
+    protected $captureUrls = array();
 
     /**
-     * @see https://developer.paypal.com/docs/api/#amount-object
+     * Construct 
+     *
+     * @param string $id not null
+     * @param string $createTime not null
+     * @param string $updateTime not null
+     * @param string $state not null
+     * @param string $intent not null
+     * @param string $payer not null
+     * @param array $transactions not null
+     * @param array $links not null
+     *
+     * @see https://developer.paypal.com/docs/integration/direct/capture-payment/#authorize-the-payment
+     * 
+     * N.B.: the documentation links to this authorization object
+     * https://developer.paypal.com/docs/api/#authorization-object but actually returns the one
+     * described here https://developer.paypal.com/docs/integration/direct/capture-payment/#authorize-the-payment
      */
     public function __construct(
         $id,
@@ -52,7 +70,7 @@ class Authorization
         foreach ($links as $link) {
             switch ($link['rel']) {
                 case 'capture':
-                    $this->captureUrl = $link['href'];
+                    $this->captureUrls[] = $link['href'];
                     break;
             }
         }
@@ -88,8 +106,13 @@ class Authorization
         return $this->links;
     }
 
-    public function getCaptureUrl()
+    /**
+     * Retrun the urls to call when capturing the authorized payments
+     *
+     * @return array
+     */
+    public function getCaptureUrls()
     {
-        return $this->captureUrl;
+        return $this->captureUrls;
     }
 }

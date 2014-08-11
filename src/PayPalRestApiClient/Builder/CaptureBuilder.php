@@ -6,8 +6,23 @@ use PayPalRestApiClient\Exception\BuilderException;
 use PayPalRestApiClient\Model\Capture;
 use PayPalRestApiClient\Model\Amount;
 
+/**
+ * The CaptureBuilder builds instances of PayPalRestApiClient\Model\Capture
+ */
 class CaptureBuilder
 {
+    /**
+     * Build an instance of PayPalRestApiClient\Model\Capture given an array
+     *
+     * @param array $data The array should contains the following keys: 
+     * id, create_time, update_time, amount, is_final_capture, state, parent_payment, links.
+     * 
+     * @return PayPalRestApiClient\Model\Capture
+     * 
+     * @throws PayPalRestApiClient\Exception\BuilderException If not all keys are set
+     *
+     * @see https://developer.paypal.com/docs/api/#capture-object
+     */
     public function build(array $data)
     {
         $mandatoryKeys = array(

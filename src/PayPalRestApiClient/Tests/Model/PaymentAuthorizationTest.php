@@ -2,13 +2,13 @@
 
 namespace PayPalRestApiClient\Tests;
 
-use PayPalRestApiClient\Model\Authorization;
+use PayPalRestApiClient\Model\PaymentAuthorization;
 
-class AuthorizationTest extends \PHPUnit_Framework_TestCase
+class PaymentAuthorizationTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetLinksUrl()
     {
-        $obj = new Authorization(
+        $obj = new PaymentAuthorization(
             'PAY-ID', "2014-08-08T17:11:00Z", "2014-08-08T17:11:00Z",
             "approved", "authorize", array('payment_method' => 'paypal'),
             array(
@@ -70,8 +70,8 @@ class AuthorizationTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(
-            'https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906/capture',
-            $obj->getCaptureUrl()
+            array('https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906/capture'),
+            $obj->getCaptureUrls()
         );
     }
 }

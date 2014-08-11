@@ -145,4 +145,12 @@ A [Json Schema validator](https://github.com/justinrainbow/json-schema) is used 
 **TO-DO for release 0.1**
 
 1. Write classes and methods documentation
-2. Move PayPalJsonSchemaValidator into a standalone repo (?)
+2. As of today the PAyPal REST API is not supporting multiple transaction (yet). Refactoring classes using transactions arrays to consider only the first one (as long as multiple transaction are not supported) (?)
+3. Move PayPalJsonSchemaValidator into a standalone repo (?)
+
+**TO-DO for release 0.2**
+
+1. Make the builder aware of the PayPalJsonSchemaValidator, so that they can validate what they are building when building from/to json
+
+2. Add validation to model classes (?)
+

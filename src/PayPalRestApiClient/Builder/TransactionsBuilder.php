@@ -5,8 +5,22 @@ namespace PayPalRestApiClient\Builder;
 use PayPalRestApiClient\Exception\BuilderException;
 use PayPalRestApiClient\Model\TransactionInterface;
 
+/**
+ * The TransactionsBuilder builds arrays that represents a paypal transactions array
+ */
 class TransactionsBuilder
 {
+    /**
+     * Build an array that represents a paypal transactions array
+     *
+     * @param array|\ArrayAccess $transactions an array of arrays or instances of PayPalRestApiClient\Model\TransactionInterface od \ArrayAccess
+     * 
+     * @return array represents an array of transaction
+     * 
+     * @throws PayPalRestApiClient\Exception\BuilderException if at least one transaction is not an array, or an object implementing \ArrayAccess interface or PayPalRestApiClient\Model\TransactionInterface
+     * 
+     * @see https://developer.paypal.com/docs/api/#transaction-object
+     */
     public function buildArray($transactions)
     {
         $this->assertTransactions($transactions);

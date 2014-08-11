@@ -7,12 +7,15 @@ use PayPalRestApiClient\Model\AccessToken;
 use PayPalRestApiClient\Model\Payment;
 use PayPalRestApiClient\Builder\PaymentRequestBodyBuilder;
 use PayPalRestApiClient\Builder\CaptureBuilder;
-use PayPalRestApiClient\Builder\AuthorizationBuilder;
+use PayPalRestApiClient\Builder\PaymentAuthorizationBuilder;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use PayPalRestApiClient\Builder\PaymentBuilder;
 use PayPalRestApiClient\Exception\BuilderException;
 use PayPalRestApiClient\Validator\PayPalJsonSchemaValidator;
 
+/**
+ * The PaymentService class is the interface for who wants to make payment calls
+ */
 class PaymentService
 {
     use \PayPalRestApiClient\Traits\RequestSender;
@@ -22,6 +25,14 @@ class PaymentService
     protected $paymentRequestBodyBuilder;
     protected $debug;
 
+    /**
+     * Construct 
+     *
+     * @param Guzzle\Http\Client $client not null
+     * @param PayPalRestApiClient\Builder\PaymentRequestBodyBuilder $paymentRequestBodyBuilder not null
+     * @param string $baseUrl not null
+     * @param boolean $debug default false
+     */
     public function __construct(
         Client $client,
         PaymentRequestBodyBuilder $paymentRequestBodyBuilder,
@@ -39,6 +50,15 @@ class PaymentService
         return $this->client;
     }
 
+    /**
+     * Execute a payment that was previously approved by the client.
+     *
+     * @param PayPalRestApiClient\Model\AccessToken $accessToken
+     * @param PayPalRestApiClient\Model\Payment $payment payment previously created with the "PaymentService::create" method
+     * @param string $payerId not null, parameter "payerId" that is passed in the success url when using paypal payment method
+     *
+     * @return PayPalRestApiClient\Model\Payment
+     */
     public function execute(
         AccessToken $accessToken,
         Payment $payment,
@@ -68,6 +88,15 @@ class PaymentService
         return $payment;
     }
 
+    /**
+     * Capture a payment that was previously authorized by the client or witha credit card.
+     *
+     * @param PayPalRestApiClient\Model\AccessToken $accessToken
+     * @param PayPalRestApiClient\Model\Payment $payment payment previously authorized with the "PaymentService::authorize" method
+     * @param boolean $isFinalCapture default true
+     *
+     * @return PayPalRestApiClient\Model\Capture
+     */
     public function capture(AccessToken $accessToken, Payment $payment, $isFinalCapture = true)
     {
         $amount = $payment->getAmount();
@@ -103,13 +132,22 @@ class PaymentService
         return $capture;
     }
 
+    /**
+     * Authorize a payment
+     *
+     * @param PayPalRestApiClient\Model\AccessToken $accessToken
+     * @param mixed $payer array or object that represents a paypal payer
+     * @param array $urls array of the cancel and redirection url
+     * @param array $transactions array of transaction objects
+     *
+     * @return PayPalRestApiClient\Model\Payment|PayPalRestApiClient\Model\PaymentAuthorization
+     */
     public function authorize(
         AccessToken $accessToken,
         $payer,
         $urls,
         $transactions
     ) {
-
         $requestBody = $this->paymentRequestBodyBuilder->build(
             'authorize',
             $payer,
@@ -126,7 +164,7 @@ class PaymentService
         $data = json_decode($response->getBody(), true);
         if ('credit_card' === $data['payer']['payment_method']) {
 
-            $authorizationBuilder = new AuthorizationBuilder();
+            $authorizationBuilder = new PaymentAuthorizationBuilder();
             $authorization = $authorizationBuilder->build($data);
 
             return $authorization;        
@@ -138,6 +176,16 @@ class PaymentService
         return $payment;        
     }
 
+    /**
+     * Create a payment
+     *
+     * @param PayPalRestApiClient\Model\AccessToken $accessToken
+     * @param mixed $payer array or object that represents a paypal payer
+     * @param array $urls array of the cancel and redirection url
+     * @param array $transactions array of transaction objects
+     *
+     * @return PayPalRestApiClient\Model\Payment
+     */
     public function create(
         AccessToken $accessToken,
         $payer,

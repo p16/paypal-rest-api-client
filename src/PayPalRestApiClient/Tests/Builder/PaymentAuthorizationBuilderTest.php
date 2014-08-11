@@ -2,13 +2,13 @@
 
 namespace PayPalRestApiClient\Tests;
 
-use PayPalRestApiClient\Builder\AuthorizationBuilder;
+use PayPalRestApiClient\Builder\PaymentAuthorizationBuilder;
 
-class AuthorizationBuilderTest extends \PHPUnit_Framework_TestCase
+class PaymentAuthorizationBuilderTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->builder = new AuthorizationBuilder();
+        $this->builder = new PaymentAuthorizationBuilder();
     }
 
     public function testBuild()
@@ -81,7 +81,7 @@ class AuthorizationBuilderTest extends \PHPUnit_Framework_TestCase
         );
         $authorization = $this->builder->build($data);
 
-        $this->assertInstanceOf('PayPalRestApiClient\Model\Authorization', $authorization);
+        $this->assertInstanceOf('PayPalRestApiClient\Model\PaymentAuthorization', $authorization);
     }
 
     /**

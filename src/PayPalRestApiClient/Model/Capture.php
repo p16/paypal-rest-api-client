@@ -2,6 +2,9 @@
 
 namespace PayPalRestApiClient\Model;
 
+/**
+ * The Capture class represents a paypal capture object
+ */
 class Capture
 {
     use \PayPalRestApiClient\Traits\PaypalData;
@@ -16,10 +19,29 @@ class Capture
     protected $links;
 
     /**
-     * @see https://developer.paypal.com/docs/api/#amount-object
+     * Construct 
+     *
+     * @param string $id not null
+     * @param string $createTime not null
+     * @param string $updateTime not null
+     * @param PayPalRestApiClient\Model\AmountInterface $amount not null
+     * @param boolean $isFinalCapture not null
+     * @param string $state not null
+     * @param string $parentPayment not null
+     * @param array $links not null
+     *
+     * @see https://developer.paypal.com/docs/api/#capture-object
      */
-    public function __construct($id, $createTime, $updateTime, AmountInterface $amount, $isFinalCapture, $state, $parentPayment, array $links)
-    {
+    public function __construct(
+        $id,
+        $createTime,
+        $updateTime,
+        AmountInterface $amount,
+        $isFinalCapture,
+        $state,
+        $parentPayment,
+        array $links
+    ) {
         $this->id = $id;
         $this->createTime = $createTime;
         $this->updateTime = $updateTime;

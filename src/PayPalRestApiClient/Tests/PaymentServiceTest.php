@@ -367,6 +367,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
         $this->assertEquals('created', $payment->getState());
         $this->assertEquals('authorize', $payment->getIntent());
+        $this->assertEquals(array(), $payment->getCaptureUrls());
     }
 
     /**
@@ -436,12 +437,12 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             array($transaction)
         );
 
-        $this->assertInstanceOf('PayPalRestApiClient\Model\Authorization', $payment);
+        $this->assertInstanceOf('PayPalRestApiClient\Model\PaymentAuthorization', $payment);
         $this->assertEquals('approved', $payment->getState());
         $this->assertEquals('authorize', $payment->getIntent());
         $this->assertEquals(
-            'https://api.sandbox.paypal.com/v1/payments/authorization/6JK78052MJ7446007/capture',
-            $payment->getCaptureUrl()
+            array('https://api.sandbox.paypal.com/v1/payments/authorization/6JK78052MJ7446007/capture'),
+            $payment->getCaptureUrls()
         );
     }
 
@@ -497,5 +498,15 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             ->method('send')
             ->with($this->expectedRequest)
             ->will($this->returnValue($this->expectedResponse));
+    }
+
+    public function testCompleteAuthorizationAndCaptureWithPaypalMethod()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testCompleteAuthorizationAndCaptureWithCreditCardMethod()
+    {
+        $this->markTestIncomplete();
     }
 }

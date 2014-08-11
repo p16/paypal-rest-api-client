@@ -4,6 +4,9 @@ namespace PayPalRestApiClient\Model;
 
 use PayPalRestApiClient\Exception\AccessTokenException;
 
+/**
+ * The AccessToken class represents a paypal access token object
+ */
 class AccessToken
 {
     use \PayPalRestApiClient\Traits\PaypalData;
@@ -15,6 +18,14 @@ class AccessToken
     protected $expiresIn;
 
     /**
+     * Construct 
+     *
+     * @param string $accessToken not null
+     * @param string $tokenType not null
+     * @param string $appId not null 
+     * @param string $expiresIn not null
+     * @param string $scope not null
+     *
      * @see https://developer.paypal.com/docs/api/#authentication--headers
      */
     public function __construct($accessToken, $tokenType, $appId, $expiresIn, $scope)

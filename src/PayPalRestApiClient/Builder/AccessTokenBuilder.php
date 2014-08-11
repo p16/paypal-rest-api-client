@@ -5,8 +5,24 @@ namespace PayPalRestApiClient\Builder;
 use PayPalRestApiClient\Exception\BuilderException;
 use PayPalRestApiClient\Model\AccessToken;
 
+/**
+ * The AccessTokenBuilder builds instances of PayPalRestApiClient\Model\AccessToken
+ */
 class AccessTokenBuilder
 {
+    /**
+     * Build an instance of PayPalRestApiClient\Model\AccessToken given an array
+     *
+     * @param array $data The array should contains the following keys: 
+     * scope, access_token, token_type, app_id, expires_in.
+     * The "access_token" key value should not be empty
+     * 
+     * @return PayPalRestApiClient\Model\AccessToken
+     *
+     * @throws PayPalRestApiClient\Exception\BuilderException If not all keys are set or when "access_token" is empty
+     * 
+     * @see https://developer.paypal.com/docs/api/#authentication--headers
+     */
     public function build(array $data)
     {
         $mandatoryKeys = array(

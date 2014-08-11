@@ -2,6 +2,9 @@
 
 namespace PayPalRestApiClient\Model;
 
+/**
+ * The Amount class represents a paypal amount object
+ */
 class Amount implements AmountInterface
 {
     protected $currency;
@@ -9,9 +12,15 @@ class Amount implements AmountInterface
     protected $details;
 
     /**
+     * Construct 
+     *
+     * @param string $currency not null
+     * @param string $total not null
+     * @param array $details default is an empty array
+     *
      * @see https://developer.paypal.com/docs/api/#amount-object
      */
-    public function __construct($currency, $total, $details = array())
+    public function __construct($currency, $total, array $details = array())
     {
         $this->currency = $currency;
         $this->total = $total;

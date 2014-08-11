@@ -2,6 +2,9 @@
 
 namespace PayPalRestApiClient\Model;
 
+/**
+ * The Link class represents a paypal HATEOAS link object
+ */
 class Link
 {
     protected $href;
@@ -9,6 +12,12 @@ class Link
     protected $method;
 
     /**
+     * Construct 
+     *
+     * @param string $href not null
+     * @param string $rel not null
+     * @param string $method not null
+     *
      * @see https://developer.paypal.com/docs/api/#hateoas-links
      */
     public function __construct($href, $rel, $method)

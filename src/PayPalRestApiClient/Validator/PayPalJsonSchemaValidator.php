@@ -2,6 +2,9 @@
 
 namespace PayPalRestApiClient\Validator;
 
+/**
+ * PayPalJsonSchemaValidator defines a validator for json strings against paypal json schema
+ */
 class PayPalJsonSchemaValidator
 {
     protected $schema;
@@ -9,6 +12,12 @@ class PayPalJsonSchemaValidator
     protected $refResolverPath;
     protected $validator;
 
+    /**
+     * Construct
+     * 
+     * @param string $schema represents a specifica schema to validate against (ex.: 'payment.json')
+     * @param mixed $data json decoded string (with "assoc" parameter set to false http://it1.php.net/json_decode )
+     */
     public function __construct($schema, $data)
     {
         $this->schema = 'file://'.realpath(__DIR__.'/schema/'.$schema);
@@ -16,6 +25,9 @@ class PayPalJsonSchemaValidator
         $this->refResolverPath = 'file://'.__DIR__.'/schema/';
     }
 
+    /**
+     * @return boolean
+     */
     public function isValid()
     {
         $retriever = new \JsonSchema\Uri\UriRetriever;
@@ -30,6 +42,9 @@ class PayPalJsonSchemaValidator
         return $this->validator->isValid();
     }
 
+    /**
+     * @return array errors array of arrays, with "property" and "message" keys for each errors
+     */
     public function getErrors()
     {
         return $this->validator->getErrors();

@@ -3,11 +3,27 @@
 namespace PayPalRestApiClient\Builder;
 
 use PayPalRestApiClient\Exception\BuilderException;
-use PayPalRestApiClient\Model\Authorization;
+use PayPalRestApiClient\Model\PaymentAuthorization;
 use PayPalRestApiClient\Model\Amount;
 
-class AuthorizationBuilder
+/**
+ * The PaymentAuthorizationBuilder builds instances of PayPalRestApiClient\Model\PaymentAuthorization
+ */
+class PaymentAuthorizationBuilder
 {
+    /**
+     * Build an instance of PayPalRestApiClient\Model\PaymentAuthorization given an array
+     *
+     * @param array $data The array should contains the following keys: 
+     * id, create_time, update_time, state, intent, payer, transactions, links.
+     * The "id" key value should not be empty.
+     * 
+     * @return PayPalRestApiClient\Model\PaymentAuthorization
+     * 
+     * @throws PayPalRestApiClient\Exception\BuilderException If not all keys are set or when "id" is empty
+     *
+     * @see https://developer.paypal.com/docs/api/#authentication--headers
+     */
     public function build(array $data)
     {
         $mandatoryKeys = array(
@@ -22,7 +38,7 @@ class AuthorizationBuilder
             throw new BuilderException('id is mandatory and should not be empty');
         }
 
-        $authorization = new Authorization(
+        $authorization = new PaymentAuthorization(
             $data['id'],
             $data['create_time'],
             $data['update_time'],
