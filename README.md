@@ -142,7 +142,7 @@ Documentation
 A [Json Schema validator](https://github.com/justinrainbow/json-schema) is used to validate a call request body. You can find all the available schema definition [here](src/PayPalRestApiClient/Validator/schema).
 
 
-**TO-DO**
+**TO-DO for release 0.1**
 
 1. Wrinte classes and methods documentation
 2. Move PayPalJsonSchemaValidator into a standalone repo (?)
