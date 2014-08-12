@@ -4,9 +4,6 @@ namespace PayPalRestApiClient\Builder;
 
 use PayPalRestApiClient\Exception\BuilderException;
 use PayPalRestApiClient\Model\Payer;
-use PayPalRestApiClient\Model\Transaction;
-use PayPalRestApiClient\Model\Amount;
-use PayPalRestApiClient\Model\Link;
 use PayPalRestApiClient\Model\Payment;
 
 /**

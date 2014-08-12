@@ -5,10 +5,12 @@ namespace PayPalRestApiClient\Builder;
 use PayPalRestApiClient\Exception\BuilderException;
 use PayPalRestApiClient\Model\PaypalPaymentAuthorization;
 use PayPalRestApiClient\Model\CreditCardPaymentAuthorization;
-use PayPalRestApiClient\Model\Amount;
 
 /**
- * The PaymentAuthorizationBuilder builds instances of PayPalRestApiClient\Model\PaymentAuthorization
+ * The PaymentAuthorizationBuilder builds instances
+ * of PayPalRestApiClient\Model\PaypalPaymentAuthorization
+ * or PayPalRestApiClient\Model\CreditCardPaymentAuthorization 
+ * based on the payer "payment_method"
  */
 class PaymentAuthorizationBuilder
 {
