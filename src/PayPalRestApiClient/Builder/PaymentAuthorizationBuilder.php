@@ -3,7 +3,8 @@
 namespace PayPalRestApiClient\Builder;
 
 use PayPalRestApiClient\Exception\BuilderException;
-use PayPalRestApiClient\Model\PaymentAuthorization;
+use PayPalRestApiClient\Model\PaypalPaymentAuthorization;
+use PayPalRestApiClient\Model\CreditCardPaymentAuthorization;
 use PayPalRestApiClient\Model\Amount;
 
 /**
@@ -38,7 +39,23 @@ class PaymentAuthorizationBuilder
             throw new BuilderException('id is mandatory and should not be empty');
         }
 
-        $authorization = new PaymentAuthorization(
+        if ($data['payer']['payment_method'] === 'paypal') {
+            $authorization = new PaypalPaymentAuthorization(
+                $data['id'],
+                $data['create_time'],
+                $data['update_time'],
+                $data['state'],
+                $data['intent'],
+                $data['payer'],
+                $data['transactions'],
+                $data['links']
+            );
+            $authorization->setPaypalData($data);
+
+            return $authorization;
+        }
+
+        $authorization = new CreditCardPaymentAuthorization(
             $data['id'],
             $data['create_time'],
             $data['update_time'],

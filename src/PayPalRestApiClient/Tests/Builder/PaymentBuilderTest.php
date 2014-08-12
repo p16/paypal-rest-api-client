@@ -20,48 +20,58 @@ class PaymentBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('created', $payment->getState());
         $this->assertEquals('sale', $payment->getIntent());
 
-        $this->assertInstanceOf('PayPalRestApiClient\Model\Payer', $payment->getPayer());
-        $this->assertEquals('paypal', $payment->getPayer()->getPaymentMethod());
-        $this->assertEquals(array('shipping_address' => array()), $payment->getPayer()->getInfo());
-        $this->assertEquals(null, $payment->getPayer()->getFundingInstruments());
+        $this->assertTrue(is_array($payment->getPayer()));
+        $this->assertEquals(
+            array(
+                'payment_method' => 'paypal',
+                'payer_info' => array(
+                    'shipping_address' => array()
+                ),
+            ),
+            $payment->getPayer()
+        );
 
         $this->assertcount(1, $payment->getTransactions());
         $transaction = $payment->getTransactions()[0];
 
-        $this->assertInstanceOf('PayPalRestApiClient\Model\Transaction', $transaction);
-        $this->assertEquals('My fantastic transaction description', $transaction->getDescription());
-        $this->assertEquals(array(), $transaction->getItemList());
-        $this->assertEquals(array(), $transaction->getRelatedResources());
-
-        $amount = $transaction->getAmount();
-        $this->assertInstanceOf('PayPalRestApiClient\Model\Amount', $amount);
-        $this->assertEquals('EUR', $amount->getCurrency());
-        $this->assertEquals(14.77, $amount->getTotal());
-        $this->assertEquals(array('subtotal' => 14.77), $amount->getDetails());
+        $this->assertTrue(is_array($transaction));
+        $this->assertEquals(
+            array(
+                'amount' => array(
+                    'total' => '14.77',
+                    'currency' => 'EUR',
+                    'details' => array(
+                        'subtotal' => '14.77'
+                    )
+                ),
+                'description' => 'My fantastic transaction description',
+            ),
+            $transaction
+        );
 
         $links = $payment->getLinks();
         $this->assertcount(3, $links);
 
         $this->assertEquals(
             'https://api.sandbox.paypal.com/v1/payments/payment/PAY-74S36081BM7699248KPOPD5Q',
-            $links[0]->getHref()
+            $links[0]['href']
         );
-        $this->assertEquals('self', $links[0]->getRel());
-        $this->assertEquals('GET', $links[0]->getMethod());
+        $this->assertEquals('self', $links[0]['rel']);
+        $this->assertEquals('GET', $links[0]['method']);
 
         $this->assertEquals(
             'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=EC-26339740WK411984R',
-            $links[1]->getHref()
+            $links[1]['href']
         );
-        $this->assertEquals('approval_url', $links[1]->getRel());
-        $this->assertEquals('REDIRECT', $links[1]->getMethod());
+        $this->assertEquals('approval_url', $links[1]['rel']);
+        $this->assertEquals('REDIRECT', $links[1]['method']);
 
         $this->assertEquals(
             'https://api.sandbox.paypal.com/v1/payments/payment/PAY-74S36081BM7699248KPOPD5Q/execute',
-            $links[2]->getHref()
+            $links[2]['href']
         );
-        $this->assertEquals('execute', $links[2]->getRel());
-        $this->assertEquals('POST', $links[2]->getMethod());
+        $this->assertEquals('execute', $links[2]['rel']);
+        $this->assertEquals('POST', $links[2]['method']);
     }
 
     public function testBuildMultipleItems()
@@ -73,13 +83,15 @@ class PaymentBuilderTest extends \PHPUnit_Framework_TestCase
         $payment = $this->builder->build($data);
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Payment', $payment);
-        $this->assertInstanceOf('PayPalRestApiClient\Model\Payer', $payment->getPayer());
-        $this->assertEquals('paypal', $payment->getPayer()->getPaymentMethod());
-        $this->assertcount(1, $payment->getTransactions());
-        $transaction = $payment->getTransactions()[0];
-
-        $this->assertInstanceOf('PayPalRestApiClient\Model\Transaction', $transaction);
-        $this->assertEquals('My fantastic transaction description', $transaction->getDescription());
+        $this->assertEquals(
+            array(
+                'payment_method' => 'paypal',
+                'payer_info' => array(
+                    'shipping_address' => array()
+                )
+            ),
+            $payment->getPayer()
+        );
 
         $expectedItemList = array(
             'items' => array(
@@ -114,15 +126,19 @@ class PaymentBuilderTest extends \PHPUnit_Framework_TestCase
                 'country_code' => 'IT',
             )
         );
-
-        $this->assertEquals($expectedItemList, $transaction->getItemList());
-        $this->assertEquals(array(), $transaction->getRelatedResources());
-
-        $amount = $transaction->getAmount();
-        $this->assertInstanceOf('PayPalRestApiClient\Model\Amount', $amount);
-        $this->assertEquals('EUR', $amount->getCurrency());
-        $this->assertEquals(15.00, $amount->getTotal());
-        $this->assertEquals(array('subtotal' => 15.00), $amount->getDetails());
+        $transaction = $payment->getTransactions()[0];
+        $this->assertEquals(
+            array(
+                'amount' => array(
+                    'total' => '15.00',
+                    'currency' => 'EUR',
+                    'details' => array('subtotal' => '15.00')
+                ),
+                'description' => 'My fantastic transaction description',
+                'item_list' => $expectedItemList
+            ),
+            $transaction
+        );
 
         $links = $payment->getLinks();
         $this->assertcount(3, $links);

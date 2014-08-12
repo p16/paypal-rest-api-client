@@ -2,15 +2,38 @@
 
 namespace PayPalRestApiClient\Tests;
 
-use PayPalRestApiClient\Model\PaymentAuthorization;
+use PayPalRestApiClient\Model\CreditCardPaymentAuthorization;
 
-class PaymentAuthorizationTest extends \PHPUnit_Framework_TestCase
+class CreditCardPaymentAuthorizationTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetLinksUrl()
     {
-        $obj = new PaymentAuthorization(
+        $obj = new CreditCardPaymentAuthorization(
             'PAY-ID', "2014-08-08T17:11:00Z", "2014-08-08T17:11:00Z",
-            "approved", "authorize", array('payment_method' => 'paypal'),
+            "approved", "authorize",
+            array(
+                'payment_method' => 'credit_card',
+                'funding_instruments' => array(
+                    array(
+                        'credit_card' => array(
+                            'number' => '4417119669820331',
+                            'type' => 'visa',
+                            'expire_month' => 11,
+                            'expire_year' => 2018,
+                            'cvv2' => '874',
+                            'first_name' => 'Betsy',
+                            'last_name' => 'Buyer',
+                            'billing_address' => array(
+                                'line1' => '111 First Street',
+                                'city' => 'Saratoga',
+                                'state' => 'CA',
+                                'postal_code' => '95070',
+                                'country_code' => 'US'
+                            )
+                        )
+                    )
+                ),
+            ),
             array(
                 array(
                     array(

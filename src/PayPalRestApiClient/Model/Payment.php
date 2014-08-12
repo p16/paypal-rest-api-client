@@ -4,71 +4,26 @@ namespace PayPalRestApiClient\Model;
 
 /**
  * The Payment class represents a paypal payment object
+ *
+ * @see https://developer.paypal.com/docs/api/#payments
+ * @see https://developer.paypal.com/docs/api/#payment-object
  */
-class Payment
+class Payment extends AbstractPayment
 {
-    use \PayPalRestApiClient\Traits\PaypalData;
-
-    protected $id;
-    protected $createTime;
-    protected $updateTime;
-    protected $state;
-    protected $intent;
-    protected $payer;
-    protected $transactions;
-    protected $links;
-
     protected $executeUrl;
     protected $approvalUrl;
     protected $captureUrl;
 
-    /**
-     * Construct 
-     *
-     * @param string $id not null
-     * @param string $createTime not null
-     * @param string $updateTime not null
-     * @param string $state not null
-     * @param string $intent not null
-     * @param PayPalRestApiClient\Model\PayerInterface $payer not null
-     * @param array $transactions not null
-     * @param array $links not null
-     *
-     * @see https://developer.paypal.com/docs/api/#payments
-     * @see https://developer.paypal.com/docs/api/#payment-object
-     */
-    public function __construct(
-        $id,
-        $createTime,
-        $updateTime,
-        $state,
-        $intent,
-        PayerInterface $payer,
-        array $transactions,
-        array $links
-    ) {
-        $this->id = $id;
-        $this->createTime = $createTime;
-        $this->updateTime = $updateTime;
-        $this->state = $state;
-        $this->intent = $intent;
-        $this->payer = $payer;
-        $this->transactions = $transactions;
-        $this->links = $links;
-
-        $this->initUrls();
-    }
-
-    private function initUrls()
+    protected function initUrls()
     {
-        foreach ($this->links as $link) {
-            switch ($link->getRel()) {
+        foreach ($this->getLinks() as $link) {
+            switch ($link['rel']) {
                 case 'approval_url':
-                    $this->approvalUrl = $link->getHref();
+                    $this->approvalUrl = $link['href'];
                     break;
                 
                 case 'execute':
-                    $this->executeUrl = $link->getHref();
+                    $this->executeUrl = $link['href'];
                     break;
 
                 case 'capture':
@@ -78,46 +33,11 @@ class Payment
         }
     }
 
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getCreateTime()
-    {
-        return $this->createTime;
-    }
-
-    public function getUpdateTime()
-    {
-        return $this->updateTime;
-    }
-
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    public function getIntent()
-    {
-        return $this->intent;
-    }
-
-    public function getPayer()
-    {
-        return $this->payer;
-    }
-
-    public function getTransactions()
-    {
-        return $this->transactions;
-    }
-
-    public function getLinks()
-    {
-        return $this->links;
-    }
-
+    /**
+     * Returns the execute url that should be use to completed an approved paypal payment
+     *
+     * @return string
+     */
     public function getExecuteUrl()
     {
         return $this->executeUrl;

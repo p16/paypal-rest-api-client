@@ -5,10 +5,10 @@ namespace PayPalRestApiClient\Service;
 use Guzzle\Http\Client;
 use PayPalRestApiClient\Model\AccessToken;
 use PayPalRestApiClient\Model\Payment;
-use PayPalRestApiClient\Model\PaymentAuthorization;
+use PayPalRestApiClient\Model\PaymentAuthorizationInterface;
 use PayPalRestApiClient\Builder\PaymentRequestBodyBuilder;
-use PayPalRestApiClient\Builder\CaptureBuilder;
 use PayPalRestApiClient\Builder\PaymentAuthorizationBuilder;
+use PayPalRestApiClient\Builder\CaptureBuilder;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use PayPalRestApiClient\Builder\PaymentBuilder;
 use PayPalRestApiClient\Exception\BuilderException;
@@ -98,7 +98,7 @@ class PaymentService
     }
 
     /**
-     * Capture a payment that was previously authorized by the client or witha credit card.
+     * Capture payment that was previously authorized by the client or witha credit card.
      *
      * @param PayPalRestApiClient\Model\AccessToken $accessToken
      * @param PayPalRestApiClient\Model\Payment $payment payment previously authorized with the "PaymentService::authorize" method
@@ -106,7 +106,7 @@ class PaymentService
      *
      * @return PayPalRestApiClient\Model\Capture
      */
-    public function capture(AccessToken $accessToken, PaymentAuthorization $paymentAuthorization, $isFinalCapture = true)
+    public function capture(AccessToken $accessToken, PaymentAuthorizationInterface $paymentAuthorization, $isFinalCapture = true)
     {
         $amount = $paymentAuthorization->getAmount();
         $data = array(
@@ -171,18 +171,11 @@ class PaymentService
         $response = $this->send($request, 201, "Payment error:");
 
         $data = json_decode($response->getBody(), true);
-        if ('credit_card' === $data['payer']['payment_method']) {
 
-            $authorizationBuilder = new PaymentAuthorizationBuilder();
-            $authorization = $authorizationBuilder->build($data);
+        $authorizationBuilder = new PaymentAuthorizationBuilder();
+        $authorization = $authorizationBuilder->build($data);
 
-            return $authorization;        
-        }
-
-        $paymentBuilder = new PaymentBuilder();
-        $payment = $paymentBuilder->build($data);
-
-        return $payment;        
+        return $authorization;        
     }
 
     /**
