@@ -197,7 +197,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
             ->method('getCurrency')
             ->will($this->returnValue('USD'));
 
-        $payment = $this->getMockBuilder('PayPalRestApiClient\Model\Payment')
+        $payment = $this->getMockBuilder('PayPalRestApiClient\Model\PaymentAuthorization')
             ->disableOriginalConstructor()
             ->getMock();
         $payment->expects($this->once())
@@ -447,12 +447,58 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testCompleteAuthorizationAndCaptureWithPaypalMethod()
     {
-        $this->markTestIncomplete();
+        #1. authorize payment with "paypal" method
+        # @see self::testAuthorizePaymentPaypalMethod
+
+        #2. redirect user to approve payment
+
+        #3. execute approvede payment
+        $url = 'https://api.sandbox.paypal.com/v1/payments/payment/PAY-0R143116WW544010AKPU4P3I/execute';
+        $returnedJson = '{"id":"PAY-0R143116WW544010AKPU4P3I","create_time":"2014-08-12T07:53:17Z","update_time":"2014-08-12T07:58:20Z","state":"approved","intent":"authorize","payer":{"payment_method":"paypal","payer_info":{"email":"verticesbuyer@example.com","first_name":"vertices","last_name":"buyer","payer_id":"CBMFXGW3CHM7Q","shipping_address":{"line1":"Via Unit� Italia, 5783296","line2":"","city":"Napoli","state":"NAPOLI","postal_code":"80127","country_code":"IT","recipient_name":""}}},"transactions":[{"amount":{"total":"12.35","currency":"EUR","details":{"subtotal":"12.35"}},"description":"my transaction","item_list":{"items":[{"name":"product name","sku":"1233456789","price":"12.35","currency":"EUR","quantity":"1"}],"shipping_address":{"recipient_name":"vertices buyer","line1":"Via Unit�, 5783296","line2":"","city":"Napoli","state":"NAPOLI","postal_code":"80127","country_code":"IT"}},"related_resources":[{"authorization":{"id":"11P01847VD5861647","create_time":"2014-08-12T07:53:17Z","update_time":"2014-08-12T07:58:20Z","amount":{"total":"12.35","currency":"EUR","details":{"subtotal":"12.35"}},"state":"authorized","parent_payment":"PAY-0R143116WW544010AKPU4P3I","valid_until":"2014-09-10T07:53:17Z","links":[{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/11P01847VD5861647","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/11P01847VD5861647/capture","rel":"capture","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/11P01847VD5861647/void","rel":"void","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/11P01847VD5861647/reauthorize","rel":"reauthorize","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-0R143116WW544010AKPU4P3I","rel":"parent_payment","method":"GET"}]}}]}],"links":[{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-0R143116WW544010AKPU4P3I","rel":"self","method":"GET"}]}';
+        $status = 200;
+        $this->initResponse($status, $returnedJson);
+        $this->initAccessToken('Bearer', '123abc123abc');
+
+        $requestBody = array("payer_id" => "CBMFXGW3CHM7Q");
+        $this->initClient($requestBody, '/v1/payments/payment/PAY-0R143116WW544010AKPU4P3I/execute');
+
+        $payment = $this->getMockBuilder('PayPalRestApiClient\Model\Payment')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $payment->expects($this->once())
+            ->method('getExecuteUrl')
+            ->will($this->returnValue($url));
+
+        $payerId = "CBMFXGW3CHM7Q";
+
+        $paymentAuthorization = $this->service->execute($this->accessToken, $payment, $payerId);
+
+        $this->assertInstanceOf('PayPalRestApiClient\Model\PaymentAuthorization', $paymentAuthorization);
+        $this->assertEquals('approved', $paymentAuthorization->getState());
+
+        return $paymentAuthorization;
     }
 
-    public function testCompleteAuthorizationAndCaptureWithCreditCardMethod()
+    /**
+     * @depends testCompleteAuthorizationAndCaptureWithPaypalMethod
+     */
+    public function testAuthorizationCaptureWithPaypalMethod($paymentAuthorization)
     {
-        $this->markTestIncomplete();
+        #4. capture the payment
+        $url = 'https://api.sandbox.paypal.com/v1/payments/authorization/11P01847VD5861647/capture';
+        $returnedJson = '{"id":"24150016S72705739","create_time":"2014-08-12T08:04:40Z","update_time":"2014-08-12T08:04:41Z","amount":{"total":"12.35","currency":"EUR"},"is_final_capture":true,"state":"completed","parent_payment":"PAY-0R143116WW544010AKPU4P3I","links":[{"href":"https://api.sandbox.paypal.com/v1/payments/capture/24150016S72705739","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v1/payments/capture/24150016S72705739/refund","rel":"refund","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/authorization/11P01847VD5861647","rel":"authorization","method":"GET"},{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-0R143116WW544010AKPU4P3I","rel":"parent_payment","method":"GET"}]}';
+        $status = 200;
+        $this->initResponse($status, $returnedJson);
+        $this->initAccessToken('Bearer', '123abc123abc');
+
+        $requestBody = array("amount" => array("total" => "12.35", "currency" => "EUR"), "is_final_capture" => true);
+        $this->initClient($requestBody, '/v1/payments/authorization/11P01847VD5861647/capture');
+
+        $capture = $this->service->capture($this->accessToken, $paymentAuthorization);
+
+        $this->assertInstanceOf('PayPalRestApiClient\Model\Capture', $capture);
+        $this->assertEquals('completed', $capture->getState());
+        $this->assertEquals(true, $capture->isFinalCapture());
     }
 
     private function initAccessToken($type, $token)
@@ -485,7 +531,7 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
 
     private function initClient($requestBody, $uri = '/v1/payments/payment')
     {
-        $this->client->expects($this->once())
+        $this->client->expects($this->atLeastOnce())
             ->method('createRequest')
             ->with(
                 'POST',

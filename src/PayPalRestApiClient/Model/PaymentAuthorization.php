@@ -114,4 +114,24 @@ class PaymentAuthorization
     {
         return $this->captureUrl;
     }
+
+    /**
+     * If set, returns the first transaction amount object
+     *
+     * N.B.: At the moment, the PayPal REST API do not support multiple transactions
+     *
+     * @return PayPalRestApiClient\Model\Amount|null
+     */
+    public function getAmount()
+    {
+        if (count($this->transactions) <= 0) {
+            return null;
+        }
+
+        return new Amount(
+            $this->transactions[0]['amount']['currency'],
+            $this->transactions[0]['amount']['total'],
+            $this->transactions[0]['amount']['details']
+        );
+    }
 }

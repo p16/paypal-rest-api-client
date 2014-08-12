@@ -5,6 +5,7 @@ namespace PayPalRestApiClient\Service;
 use Guzzle\Http\Client;
 use PayPalRestApiClient\Model\AccessToken;
 use PayPalRestApiClient\Model\Payment;
+use PayPalRestApiClient\Model\PaymentAuthorization;
 use PayPalRestApiClient\Builder\PaymentRequestBodyBuilder;
 use PayPalRestApiClient\Builder\CaptureBuilder;
 use PayPalRestApiClient\Builder\PaymentAuthorizationBuilder;
@@ -51,7 +52,7 @@ class PaymentService
     }
 
     /**
-     * Execute a payment that was previously approved by the client.
+     * Execute a payment or an authorization that was previously approved by the client.
      *
      * @param PayPalRestApiClient\Model\AccessToken $accessToken
      * @param PayPalRestApiClient\Model\Payment $payment payment previously created with the "PaymentService::create" method
@@ -82,6 +83,14 @@ class PaymentService
         $response = $this->send($request, 200, "Payment error:");
         $data = json_decode($response->getBody(), true);
 
+        if ('authorize' === $data['intent']) {
+
+            $authorizationBuilder = new PaymentAuthorizationBuilder();
+            $authorization = $authorizationBuilder->build($data);
+
+            return $authorization;        
+        }
+
         $paymentBuilder = new PaymentBuilder();
         $payment = $paymentBuilder->build($data);
 
@@ -97,9 +106,9 @@ class PaymentService
      *
      * @return PayPalRestApiClient\Model\Capture
      */
-    public function capture(AccessToken $accessToken, Payment $payment, $isFinalCapture = true)
+    public function capture(AccessToken $accessToken, PaymentAuthorization $paymentAuthorization, $isFinalCapture = true)
     {
-        $amount = $payment->getAmount();
+        $amount = $paymentAuthorization->getAmount();
         $data = array(
             'amount' => array(
                 'total' => $amount->getTotal(),
@@ -110,7 +119,7 @@ class PaymentService
 
         $request = $this->client->createRequest(
             'POST',
-            $payment->getCaptureUrl(),
+            $paymentAuthorization->getCaptureUrl(),
             array(
                 'Accept' => 'application/json',
                 'Accept-Language' => 'en_US',
