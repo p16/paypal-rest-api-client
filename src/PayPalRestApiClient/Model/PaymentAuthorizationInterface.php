@@ -13,7 +13,12 @@ interface PaymentAuthorizationInterface
     public function getCaptureUrl();
 
     /**
-     * @return PayPalRestApiClient\Model\AmountInterface
+     * @return array
      */
     public function getAmount();
+
+    /**
+     * @return array
+     */
+    public function getAuthorization();
 }

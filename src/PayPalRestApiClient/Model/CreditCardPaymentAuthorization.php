@@ -8,16 +8,15 @@ namespace PayPalRestApiClient\Model;
 class CreditCardPaymentAuthorization extends AbstractPayment implements PaymentAuthorizationInterface
 {
     protected $captureUrl;
+    protected $authorization;
 
     protected function initUrls()
     {
         $links = $this->getLinks();
-        if (isset($this->transactions[0]['related_resources'])) {
-            $links = array_merge(
-                $links,
-                $this->transactions[0]['related_resources'][0]['authorization']['links']
-            );
-        }
+        $links = array_merge(
+            $links,
+            $this->getAuthorization()['links']
+        );
 
         foreach ($links as $link) {
             switch ($link['rel']) {
@@ -29,13 +28,23 @@ class CreditCardPaymentAuthorization extends AbstractPayment implements PaymentA
     }
 
     /**
-     * Retrun the urls to call when capturing the authorized payments
+     * Retruns the urls to call when capturing the authorized payments
      *
      * @return array
      */
     public function getCaptureUrl()
     {
         return $this->captureUrl;
+    }
+
+    /**
+     * Retruns an authorization object
+     *
+     * @return array
+     */
+    public function getAuthorization()
+    {
+        return $this->transactions[0]['related_resources'][0]['authorization'];
     }
 
     /**

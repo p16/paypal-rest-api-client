@@ -12,8 +12,8 @@ class PaypalPaymentAuthorization extends Payment implements PaymentAuthorization
         parent::initUrls();
 
         $links = array();
-        if (isset($this->transactions[0]['related_resources'])) {
-            $links = $this->transactions[0]['related_resources'][0]['authorization']['links'];
+        if ($authorization = $this->getAuthorization()) {
+            $links = $authorization['links'];
         }
 
         foreach ($links as $link) {
@@ -36,5 +36,17 @@ class PaypalPaymentAuthorization extends Payment implements PaymentAuthorization
             $this->transactions[0]['amount']['total'],
             $this->transactions[0]['amount']['details']
         );
+    }
+
+    /**
+     * Retruns an authorization object
+     *
+     * @return array
+     */
+    public function getAuthorization()
+    {
+        if (isset($this->transactions[0]['related_resources'])) {
+            return $this->transactions[0]['related_resources'][0]['authorization'];
+        }
     }
 }
