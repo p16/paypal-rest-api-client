@@ -19,7 +19,7 @@ class PaymentAuthorizationBuilder
      * id, create_time, update_time, state, intent, payer, transactions, links.
      * The "id" key value should not be empty.
      * 
-     * @return PayPalRestApiClient\Model\PaymentAuthorization
+     * @return PayPalRestApiClient\Model\PaypalPaymentAuthorization|PayPalRestApiClient\Model\CreditCardPaymentAuthorization
      * 
      * @throws PayPalRestApiClient\Exception\BuilderException If not all keys are set or when "id" is empty
      *

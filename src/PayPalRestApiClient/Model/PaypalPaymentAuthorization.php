@@ -9,24 +9,15 @@ class PaypalPaymentAuthorization extends Payment implements PaymentAuthorization
 {
     protected function initUrls()
     {
-        $links = $this->links;
+        parent::initUrls();
+
+        $links = array();
         if (isset($this->transactions[0]['related_resources'])) {
-            $links = array_merge(
-                $links,
-                $this->transactions[0]['related_resources'][0]['authorization']['links']
-            );
+            $links = $this->transactions[0]['related_resources'][0]['authorization']['links'];
         }
 
         foreach ($links as $link) {
             switch ($link['rel']) {
-                case 'approval_url':
-                    $this->approvalUrl = $link['href'];
-                    break;
-                
-                case 'execute':
-                    $this->executeUrl = $link['href'];
-                    break;
-
                 case 'capture':
                     $this->captureUrl = $link['href'];
                     break;
