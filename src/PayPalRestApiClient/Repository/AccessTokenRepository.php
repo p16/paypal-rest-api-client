@@ -7,7 +7,7 @@ use PayPalRestApiClient\Builder\AccessTokenBuilder;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 
 /**
- * The AccessTokenRepository class has the responsability of retriving an access token given a pai of cliendId and clientSecret
+ * The AccessTokenRepository class has the responsability of retriving an access token given a pair of cliendId and clientSecret
  *
  * @see https://developer.paypal.com/docs/api/#authentication--headers
  */

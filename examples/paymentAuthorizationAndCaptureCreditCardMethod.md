@@ -59,7 +59,7 @@ Payment authorization and capture with credit card method
         )
     );
 
-    $paymentAuthorization = $paymentService->create(
+    $paymentAuthorization = $paymentService->authorize(
         $accessToken,
         $payer,
         array(
