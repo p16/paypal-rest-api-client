@@ -79,6 +79,6 @@ A [Json Schema validator](https://github.com/justinrainbow/json-schema) is used 
 
 2. Make the builder aware of the PayPalJsonSchemaValidator, so that they can validate what they are building when building from/to json
 
-3. Add validation to model classes (?)
+3. Add strict validation to model classes (?)
 
 
