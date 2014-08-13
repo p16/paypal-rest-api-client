@@ -24,8 +24,8 @@ At the moment the only [PayPal REST API](https://developer.paypal.com/docs/api/)
 - Require an access token: https://developer.paypal.com/docs/api/#authentication--headers
 - Create a payment (only with "paypal" and "credit_card" payment methods): https://developer.paypal.com/docs/api/#create-a-payment 
 - Execute a payment: https://developer.paypal.com/docs/api/#execute-an-approved-paypal-payment
-- Authorize and capture a payment: https://developer.paypal.com/docs/integration/direct/capture-payment/ (only with credit card, not with paypal payment method)
-- Validation of json schema for payment requests: [Json Schema](http://json-schema.org/), [PHP Json Schema validator](https://github.com/justinrainbow/json-schema), [PayPal REST API objects](https://developer.paypal.com/docs/api/)
+- Authorize and capture a payment: https://developer.paypal.com/docs/integration/direct/capture-payment/
+- Validation of json schema for payment request body: [Json Schema](http://json-schema.org/), [PHP Json Schema validator](https://github.com/justinrainbow/json-schema), [PayPal REST API objects](https://developer.paypal.com/docs/api/)
 
 Installation
 ------------
