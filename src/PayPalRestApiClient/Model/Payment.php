@@ -10,28 +10,7 @@ namespace PayPalRestApiClient\Model;
  */
 class Payment extends AbstractPayment
 {
-    protected $executeUrl;
-    protected $approvalUrl;
-    protected $captureUrl;
-
-    protected function initUrls()
-    {
-        foreach ($this->getLinks() as $link) {
-            switch ($link['rel']) {
-                case 'approval_url':
-                    $this->approvalUrl = $link['href'];
-                    break;
-                
-                case 'execute':
-                    $this->executeUrl = $link['href'];
-                    break;
-
-                case 'capture':
-                    $this->captureUrl = $link['href'];
-                    break;
-            }
-        }
-    }
+    use \PayPalRestApiClient\Traits\LinkFinder;
 
     /**
      * Returns the execute url that should be use to completed an approved paypal payment
@@ -40,7 +19,9 @@ class Payment extends AbstractPayment
      */
     public function getExecuteUrl()
     {
-        return $this->executeUrl;
+        $link = $this->findLink('execute');
+
+        return $link->getHref();
     }
 
     /**
@@ -50,32 +31,8 @@ class Payment extends AbstractPayment
      */
     public function getApprovalUrl()
     {
-        return $this->approvalUrl;
-    }
+        $link = $this->findLink('approval_url');
 
-    /**
-     * Returns the capture url that should be use to capture an authorized payment
-     *
-     * @return string
-     */
-    public function getCaptureUrl()
-    {
-        return $this->captureUrl;
-    }
-
-    /**
-     * If set, returns the first transaction amount object
-     *
-     * N.B.: At the moment, the PayPal REST API do not support multiple transactions
-     *
-     * @return PayPalRestApiClient\Model\Amount|null
-     */
-    public function getAmount()
-    {
-        if (count($this->transactions) <= 0) {
-            return null;
-        }
-
-        return $this->transactions[0]->getAmount();
+        return $link->getHref();
     }
 }

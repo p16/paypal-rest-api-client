@@ -3,15 +3,14 @@
 namespace PayPalRestApiClient\Builder;
 
 use PayPalRestApiClient\Exception\BuilderException;
-use PayPalRestApiClient\Model\Capture;
-use PayPalRestApiClient\Model\Amount;
+use PayPalRestApiClient\Model\Authorization;
 
 /**
- * The CaptureBuilder builds instances of PayPalRestApiClient\Model\Capture
+ * The AuthorizationBuilder builds instances of PayPalRestApiClient\Model\Authorization
  *
- * CaptureBuilder depends on two other builders: AmountBuilder and LinkBuilder.
+ * AuthorizationBuilder depends on two other builders: AmountBuilder and LinkBuilder.
  */
-class CaptureBuilder extends AbstractBuilder
+class AuthorizationBuilder extends AbstractBuilder
 {
     protected $amountBuilder;
     protected $linkBuilder;
@@ -33,21 +32,21 @@ class CaptureBuilder extends AbstractBuilder
     }
 
     /**
-     * Build an instance of PayPalRestApiClient\Model\Capture given an array
+     * Build an instance of PayPalRestApiClient\Model\Authorization given an array
      *
      * @param array $data The array should contains the following keys: 
-     * id, create_time, update_time, amount, is_final_capture, state, parent_payment, links.
+     * amount, create_time, update_time, state, parent_payment, id, valid_until, links.
      * 
-     * @return PayPalRestApiClient\Model\Capture
-     * 
-     * @throws PayPalRestApiClient\Exception\BuilderException If not all keys are set
+     * @return PayPalRestApiClient\Model\Authorization
      *
-     * @see https://developer.paypal.com/docs/api/#capture-object
+     * @throws PayPalRestApiClient\Exception\BuilderException
+     * 
+     * @see https://developer.paypal.com/docs/api/#authorization-object
      */
     public function build(array $data)
     {
         $this->validateArrayKeys(
-            array('id', 'create_time', 'update_time', 'amount', 'is_final_capture', 'state', 'parent_payment', 'links'),
+            array('amount', 'create_time', 'update_time', 'state', 'parent_payment', 'id', 'valid_until', 'links'),
             $data
         );
 
@@ -56,18 +55,17 @@ class CaptureBuilder extends AbstractBuilder
             $links[] = $this->linkBuilder->build($link);
         }
 
-        $capture = new Capture(
+        $authorization = new Authorization(
             $data['id'],
             $data['create_time'],
             $data['update_time'],
             $this->amountBuilder->build($data['amount']),
-            $data['is_final_capture'],
             $data['state'],
             $data['parent_payment'],
+            $data['valid_until'],
             $links
         );
-        $capture->setPaypalData($data);
 
-        return $capture;
+        return $authorization;
     }
 }

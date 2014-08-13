@@ -27,16 +27,25 @@ class Amount implements AmountInterface
         $this->details = $details;
     }
 
+    /**
+     * @return string
+     */
     public function getCurrency()
     {
         return $this->currency;
     }
 
+    /**
+     * @return string
+     */
     public function getTotal()
     {
         return $this->total;
     }
 
+    /**
+     * @return array
+     */
     public function getDetails()
     {
         return $this->details;

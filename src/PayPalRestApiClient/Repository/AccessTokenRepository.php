@@ -33,6 +33,9 @@ class AccessTokenRepository
         $this->debug = $debug;
     }
 
+    /**
+     * @return Guzzle\Http\Client
+     */
     protected function getClient()
     {
         return $this->client;

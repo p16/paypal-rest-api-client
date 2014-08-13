@@ -35,11 +35,29 @@ class CaptureBuilderTest extends \PHPUnit_Framework_TestCase
         $capture = $this->builder->build($data);
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Capture', $capture);
+        $this->assertEquals('PAY-ID', $capture->getId());
+        $this->assertEquals('2014-08-08T17:11:00Z', $capture->getCreateTime());
+        $this->assertEquals('2014-08-08T17:11:00Z', $capture->getUpdateTime());
+
+        $this->assertInstanceOf('PayPalRestApiClient\Model\Amount', $capture->getAmount());
+        $this->assertEquals('12.00', $capture->getAmount()->getTotal());
+        $this->assertEquals('EUR', $capture->getAmount()->getCurrency());
+        $this->assertEquals(array(), $capture->getAmount()->getDetails());
+
+        $this->assertEquals(true, $capture->isFinalCapture());
+        $this->assertEquals('copmpleted', $capture->getState());
+        $this->assertEquals('PAY-ID-ID', $capture->getParentPayment());
+        $this->assertTrue(is_array($capture->getLinks()));
+        
+        $this->assertInstanceOf('PayPalRestApiClient\Model\Link', $capture->getLinks()[0]);
+        $this->assertEquals('https://link', $capture->getLinks()[0]->getHref());
+        $this->assertEquals('self', $capture->getLinks()[0]->getRel());
+        $this->assertEquals('GET', $capture->getLinks()[0]->getMethod());
     }
 
     /**
      * @expectedException PayPalRestApiClient\Exception\BuilderException
-     * @expectedExceptionMessage Mandatory data missing for: id, create_time, update_time, amount, is_final_capture, state, parent_payment, links
+     * @expectedExceptionMessage Mandatory keys missing for PayPalRestApiClient\Builder\CaptureBuilder: id, create_time, update_time, amount, is_final_capture, state, parent_payment, links
      */
     public function testBuildValidationNoScope()
     {

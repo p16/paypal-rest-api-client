@@ -62,89 +62,16 @@ Documentation
 
 **Using the library**
 
-    $this->baseUrl = 'https://api.sandbox.paypal.com';
-    $this->returnUrl = 'http://example.com/success';
-    $this->cancelUrl = 'http://example.com/cancel';
-
-    $this->client = new Client();
-
-    $repo = new AccessTokenRepository(
-        $this->client,
-        $this->baseUrl
-    );
-    $accessToken = $repo->getAccessToken($clientId, $secret);
-
-    $paymentRequestBodyBuilder = new PaymentRequestBodyBuilder();
-
-    $paymentService = new PaymentService(
-        $this->client,
-        $paymentRequestBodyBuilder,
-        $this->baseUrl
-    );
-
-    $this->item_list = array(
-        'items' => array(
-            array(
-                'quantity' => 1,
-                'name' => 'product name',
-                'price' => '12.35',
-                'currency' => 'EUR',
-                'sku' => '1233456789',
-            ),
-        )
-    );
-
-    $amount = new Amount('EUR', '12.35');
-    $transaction = new Transaction($amount, 'my transaction', $this->item_list);
-
-    $payment = $paymentService->create(
-        $accessToken,
-        new Payer('paypal'),
-        array(
-            'return_url' => $this->returnUrl,
-            'cancel_url' => $this->cancelUrl
-        ),
-        array($transaction)
-    );
-
-    $_SESSION['payment_data'] = $payment->getPaypalData();
-    // or
-    // $_SESSION['payment_data'] = serialize($payment);
-
-    $redirectUrl = $payment->getApprovalUrl();
-
-    /* redirects the user to $redirectUrl */
-    /* coming back from PayPal http://example.com/success?token=EC-9VK533621R3302713&PayerID=CBMFXGW3CHM7Q */
-
-    $payerId = $_GET['PayerID'];
-
-    $paymentRequestBodyBuilder = new PaymentRequestBodyBuilder();
-
-    $paymentService = new PaymentService(
-        $this->client,
-        $paymentRequestBodyBuilder,
-        $this->baseUrl
-    );
-
-    $paymentBuilder = new PaymentBuilder();
-    $originalPayment = $paymentBuilder->build($_SESSION['payment_data']);
-    // or
-    // $originalPayment = unserialize($_SESSION['payment_data']);
-
-
-    $payment = $service->execute($accessToken, $originalPayment, $payerId);
-
-    var_dump($payment);
+- [Direct payment with paypal method](examples/directPaymentPaypalMethod.md)
+- [Direct payment with credit card method](examples/directPaymentCreditCardMethod.md)
+- [Payment authorization and capture with paypal method](examples/paymentAuthorizationAndCapturePaypalMethod.md)
+- [Payment authorization and capture with credit card method](examples/paymentAuthorizationAndCaptureCreditCardMethod.md)
 
 
 **PayPal Json schema validation**
 
 A [Json Schema validator](https://github.com/justinrainbow/json-schema) is used to validate a call request body. You can find all the available schema definition [here](src/PayPalRestApiClient/Validator/schema).
 
-
-**TO-DO for release 0.1**
-
-2. Add authorization and capture of a payment with paypal payment method
 
 **TO-DO for release 0.2**
 

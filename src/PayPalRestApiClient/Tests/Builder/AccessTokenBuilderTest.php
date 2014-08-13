@@ -23,11 +23,28 @@ class AccessTokenBuilderTest extends \PHPUnit_Framework_TestCase
         $accessToken = $this->builder->build($data);
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\AccessToken', $accessToken);
+        $this->assertEquals(
+            'https://uri.paypal.com/services/subscriptions https://api.paypal.com/v1/payments/.* https://api.paypal.com/v1/vault/credit-card https://uri.paypal.com/services/applications/webhooks openid https://uri.paypal.com/services/invoicing https://api.paypal.com/v1/vault/credit-card/.*',
+            $accessToken->getScope()
+        );
+        $this->assertEquals(
+            'A015RBZpQe4cp00uD0T.hSO5W9YtuO-0jHtnSCjSt-aCzyQ',
+            $accessToken->getAccesstoken()
+        );
+        $this->assertEquals('Bearer', $accessToken->getTokenType());
+        $this->assertEquals(
+            'APP-80W284485P519543T',
+            $accessToken->getAppId()
+        );
+        $this->assertEquals(
+            '28800',
+            $accessToken->getExpiresIn()
+        );
     }
 
     /**
      * @expectedException PayPalRestApiClient\Exception\BuilderException
-     * @expectedExceptionMessage Mandatory data missing for: scope, access_token, token_type, app_id, expires_in
+     * @expectedExceptionMessage Mandatory keys missing for PayPalRestApiClient\Builder\AccessTokenBuilder: scope, access_token, token_type, app_id, expires_in
      */
     public function testBuildValidationNoScope()
     {

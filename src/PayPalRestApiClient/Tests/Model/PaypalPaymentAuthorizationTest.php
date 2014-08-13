@@ -3,81 +3,57 @@
 namespace PayPalRestApiClient\Tests;
 
 use PayPalRestApiClient\Model\PaypalPaymentAuthorization;
+use PayPalRestApiClient\Model\Authorization;
+use PayPalRestApiClient\Model\Amount;
+use PayPalRestApiClient\Model\Transaction;
+use PayPalRestApiClient\Model\Link;
+use PayPalRestApiClient\Model\Payer;
 
 class PaypalPaymentAuthorizationTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetAuthorization()
     {
-        $authorization = array(
-            'id' => '55660361T84491906',
-            'create_time' => '',
-            'update_time' => '',
-            'amount' => array(
-                'total' => 12.00,
-                'currency' => 'EUR'
-            ),
-            'state' => 'authorized',
-            'parent_payment' => 'PAY-82D19789V6611622NKPSQISI',
-            'valid_until' => '2014-09-06T17:09:29Z',
-            'links' => array(
-                array(
-                    'href' => 'https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906',
-                    'rel' => 'self',
-                    'method' => 'GET',
+        $authorization = new Authorization(
+            '55660361T84491906',
+            '2014-08-06T17:09:29Z',
+            '2014-08-06T17:09:29Z',
+            new Amount('EUR', '12.00'),
+            'authorized',
+            'PAY-82D19789V6611622NKPSQISI',
+            '2014-09-06T17:09:29Z',
+            array(
+                new Link(
+                    'https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906',
+                    'self',
+                    'GET'
                 ),
-                array(
-                    'href' => 'https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906/capture',
-                    'rel' => 'capture',
-                    'method' => 'POST',
+                new Link(
+                    'https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906/capture',
+                    'capture',
+                    'POST'
                 ),
-                array(
-                    'href' => 'https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906/void',
-                    'rel' => 'void',
-                    'method' => 'POST',
+                new Link(
+                    'https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906/void',
+                    'void',
+                    'POST'
                 ),
-                array(
-                    'href' => 'https://api.sandbox.paypal.com/v1/payments/payment/PAY-82D19789V6611622NKPSQISI',
-                    'rel' => 'parent_payment',
-                    'method' => 'GET',
+                new Link(
+                    'https://api.sandbox.paypal.com/v1/payments/payment/PAY-82D19789V6611622NKPSQISI',
+                    'parent_payment',
+                    'GET'
                 )
             )
         );
         $obj = new PaypalPaymentAuthorization(
             'PAY-ID', "2014-08-08T17:11:00Z", "2014-08-08T17:11:00Z",
             "approved", "authorize",
+            new Payer('paypal'),
             array(
-                'payment_method' => 'paypal',
-                'funding_instruments' => array(
+                new Transaction(
+                    new Amount('EUR', '12.00'),
+                    'my transaction',
+                    array(),
                     array(
-                        'credit_card' => array(
-                            'number' => '4417119669820331',
-                            'type' => 'visa',
-                            'expire_month' => 11,
-                            'expire_year' => 2018,
-                            'cvv2' => '874',
-                            'first_name' => 'Betsy',
-                            'last_name' => 'Buyer',
-                            'billing_address' => array(
-                                'line1' => '111 First Street',
-                                'city' => 'Saratoga',
-                                'state' => 'CA',
-                                'postal_code' => '95070',
-                                'country_code' => 'US'
-                            )
-                        )
-                    )
-                ),
-            ),
-            array(
-                array(
-                    array(
-                        'amount' => array(
-                            'total' => 12.00,
-                            'currency' => 'EUR'
-                        )
-                    ),
-                    'description' => 'my transaction',
-                    'related_resources' => array(
                         array(
                             'authorization' => $authorization
                         )
@@ -85,87 +61,31 @@ class PaypalPaymentAuthorizationTest extends \PHPUnit_Framework_TestCase
                 )
             ),
             array(
-                array(
-                    'href' => 'https://api.sandbox.paypal.com/v1/payments/payment/PAY-82D19789V6611622NKPSQISI',
-                    'rel' => 'self',
-                    'method' => 'GET',
+                new Link(
+                    'https://api.sandbox.paypal.com/v1/payments/payment/PAY-82D19789V6611622NKPSQISI',
+                    'self',
+                    'GET'
                 )
             )
         );
 
-        $this->assertTrue(is_array($obj->getAuthorization()));
+        $this->assertInstanceOf(
+            'PayPalRestApiClient\Model\Authorization',
+            $obj->getAuthorization()
+        );
         $this->assertEquals(
             $authorization,
             $obj->getAuthorization()
         );
+
+        return $obj;
     }
 
-    public function testGetLinksUrl()
+    /**
+     * @depends testGetAuthorization
+     */
+    public function testGetLinksUrl($obj)
     {
-        $obj = new PaypalPaymentAuthorization(
-            'PAY-ID', "2014-08-08T17:11:00Z", "2014-08-08T17:11:00Z",
-            "approved", "authorize",
-            array(
-                'payment_method' => 'paypal'
-            ),
-            array(
-                array(
-                    array(
-                        'amount' => array(
-                            'total' => 12.00,
-                            'currency' => 'EUR'
-                        )
-                    ),
-                    'description' => 'my transaction',
-                    'related_resources' => array(
-                        array(
-                            'authorization' => array(
-                                'id' => '55660361T84491906',
-                                'create_time' => '',
-                                'update_time' => '',
-                                'amount' => array(
-                                    'total' => 12.00,
-                                    'currency' => 'EUR'
-                                ),
-                                'state' => 'authorized',
-                                'parent_payment' => 'PAY-82D19789V6611622NKPSQISI',
-                                'valid_until' => '2014-09-06T17:09:29Z',
-                                'links' => array(
-                                    array(
-                                        'href' => 'https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906',
-                                        'rel' => 'self',
-                                        'method' => 'GET',
-                                    ),
-                                    array(
-                                        'href' => 'https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906/capture',
-                                        'rel' => 'capture',
-                                        'method' => 'POST',
-                                    ),
-                                    array(
-                                        'href' => 'https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906/void',
-                                        'rel' => 'void',
-                                        'method' => 'POST',
-                                    ),
-                                    array(
-                                        'href' => 'https://api.sandbox.paypal.com/v1/payments/payment/PAY-82D19789V6611622NKPSQISI',
-                                        'rel' => 'parent_payment',
-                                        'method' => 'GET',
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-            ),
-            array(
-                array(
-                    'href' => 'https://api.sandbox.paypal.com/v1/payments/payment/PAY-82D19789V6611622NKPSQISI',
-                    'rel' => 'self',
-                    'method' => 'GET',
-                )
-            )
-        );
-
         $this->assertEquals(
             'https://api.sandbox.paypal.com/v1/payments/authorization/55660361T84491906/capture',
             $obj->getCaptureUrl()

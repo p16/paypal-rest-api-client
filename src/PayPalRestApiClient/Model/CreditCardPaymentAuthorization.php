@@ -7,26 +7,6 @@ namespace PayPalRestApiClient\Model;
  */
 class CreditCardPaymentAuthorization extends AbstractPayment implements PaymentAuthorizationInterface
 {
-    protected $captureUrl;
-    protected $authorization;
-
-    protected function initUrls()
-    {
-        $links = $this->getLinks();
-        $links = array_merge(
-            $links,
-            $this->getAuthorization()['links']
-        );
-
-        foreach ($links as $link) {
-            switch ($link['rel']) {
-                case 'capture':
-                    $this->captureUrl = $link['href'];
-                    return;
-            }
-        }
-    }
-
     /**
      * Retruns the urls to call when capturing the authorized payments
      *
@@ -34,7 +14,7 @@ class CreditCardPaymentAuthorization extends AbstractPayment implements PaymentA
      */
     public function getCaptureUrl()
     {
-        return $this->captureUrl;
+        return $this->getAuthorization()->getCaptureUrl();
     }
 
     /**
@@ -44,7 +24,7 @@ class CreditCardPaymentAuthorization extends AbstractPayment implements PaymentA
      */
     public function getAuthorization()
     {
-        return $this->transactions[0]['related_resources'][0]['authorization'];
+        return $this->transactions[0]->getAuthorization();
     }
 
     /**
@@ -60,10 +40,6 @@ class CreditCardPaymentAuthorization extends AbstractPayment implements PaymentA
             return null;
         }
 
-        return new Amount(
-            $this->transactions[0]['amount']['currency'],
-            $this->transactions[0]['amount']['total'],
-            $this->transactions[0]['amount']['details']
-        );
+        return $this->transactions[0]->getAmount();
     }
 }

@@ -8,6 +8,7 @@ namespace PayPalRestApiClient\Model;
 abstract class AbstractPayment
 {
     use \PayPalRestApiClient\Traits\PaypalData;
+    use \PayPalRestApiClient\Traits\AssertArrayOfObject;
 
     protected $id;
     protected $createTime;
@@ -36,7 +37,7 @@ abstract class AbstractPayment
         $updateTime,
         $state,
         $intent,
-        $payer,
+        PayerInterface $payer,
         array $transactions,
         array $links
     ) {
@@ -46,49 +47,73 @@ abstract class AbstractPayment
         $this->state = $state;
         $this->intent = $intent;
         $this->payer = $payer;
-        $this->transactions = $transactions;
-        $this->links = $links;
 
-        $this->initUrls();
+        $this->assertArrayOfObjects($transactions, 'PayPalRestApiClient\Model\TransactionInterface', 'transactions');
+        $this->transactions = $transactions;
+
+        $this->assertArrayOfObjects($links, 'PayPalRestApiClient\Model\LinkInterface', 'links');
+        $this->links = $links;
     }
 
-    abstract protected function initUrls();
-
+    /**
+     * @return string
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getCreateTime()
     {
         return $this->createTime;
     }
 
+    /**
+     * @return string
+     */
     public function getUpdateTime()
     {
         return $this->updateTime;
     }
 
+    /**
+     * @return string
+     */
     public function getState()
     {
         return $this->state;
     }
 
+    /**
+     * @return string
+     */
     public function getIntent()
     {
         return $this->intent;
     }
 
+    /**
+     * @return string
+     */
     public function getPayer()
     {
         return $this->payer;
     }
 
+    /**
+     * @return array
+     */
     public function getTransactions()
     {
         return $this->transactions;
     }
 
+    /**
+     * @return array
+     */
     public function getLinks()
     {
         return $this->links;

@@ -33,7 +33,7 @@ class PaymentAuthorizationBuilderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException PayPalRestApiClient\Exception\BuilderException
-     * @expectedExceptionMessage Mandatory data missing for: id, create_time, update_time, state, intent, payer, transactions, links
+     * @expectedExceptionMessage Mandatory keys missing for PayPalRestApiClient\Builder\PaymentAuthorizationBuilder: id, create_time, update_time, state, intent, payer, transactions, links
      */
     public function testBuildValidationNoScope()
     {

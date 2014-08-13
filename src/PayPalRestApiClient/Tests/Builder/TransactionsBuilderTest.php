@@ -11,6 +11,113 @@ class TransactionsBuilderTest extends \PHPUnit_Framework_TestCase
         $this->builder = new TransactionsBuilder();
     }
 
+    public function testBuildEmptyArray()
+    {
+        $data = array();
+
+        $transactions = $this->builder->build($data);
+
+        $this->assertEquals(
+            array(),
+            $transactions
+        );
+    }
+
+    public function testBuildFromArray()
+    {
+        $relatedResources = array(
+            array(
+                'authorization' => array(
+                    'id' => '6JK78052MJ7446007',
+                    'create_time' => '2014-08-08T17:11:00Z',
+                    'update_time' => '2014-08-08T17:11:19Z',
+                    'amount' => array(
+                        'total' => '12.35',
+                        'currency' => 'EUR',
+                        'details' => array(
+                            'subtotal' => '12.35'
+                        )
+                    ),
+                    'state' => 'authorized',
+                    'parent_payment' => 'PAY-2LS84841MB1756502KPSQJJA',
+                    'valid_until' => '2014-09-06T17:11:00Z',
+                    'links' => array(
+                        array(
+                            'href' => 'https://api.sandbox.paypal.com/v1/payments/authorization/6JK78052MJ7446007',
+                            'rel' => 'self',
+                            'method' => 'GET',
+                        ),
+                        array(
+                            'href' => 'https://api.sandbox.paypal.com/v1/payments/authorization/6JK78052MJ7446007/capture',
+                            'rel' => 'capture',
+                            'method' => 'POST',
+                        ),
+                        array(
+                            'href' => 'https://api.sandbox.paypal.com/v1/payments/authorization/6JK78052MJ7446007/void',
+                            'rel' => 'void',
+                            'method' => 'POST',
+                        ),
+                        array(
+                            'href' => 'https://api.sandbox.paypal.com/v1/payments/payment/PAY-2LS84841MB1756502KPSQJJA',
+                            'rel' => 'parent_payment',
+                            'method' => 'GET',
+                        )
+                    )
+                )
+
+            )
+        );
+
+        $data = array(
+            array(
+                'amount' => array(
+                    'total' => '12.35',
+                    'currency' => 'EUR',
+                    'details' => array(
+                        'subtotal' => '12.35',
+                    )
+
+                ),
+                'description' => 'my transaction',
+                'related_resources' => $relatedResources,
+            )
+        );
+
+
+        $transactions = $this->builder->build($data);
+
+        foreach ($transactions as $transaction) {
+            $this->assertInstanceOf('PayPalRestApiClient\Model\Transaction', $transaction);
+            $this->assertInstanceOf('PayPalRestApiClient\Model\Amount', $transaction->getAmount());
+        }
+
+        $transaction = $transactions[0];
+        $this->assertEquals('my transaction', $transaction->getDescription());
+
+        $relatedResources = $transaction->getRelatedResources();
+        $this->assertCount(1, $relatedResources);
+
+        $authorization1 = $relatedResources[0]['authorization'];
+        $this->assertInstanceOf('PayPalRestApiClient\Model\Authorization', $authorization1);
+
+        $authorization2 = $transaction->getAuthorization();
+        $this->assertInstanceOf('PayPalRestApiClient\Model\Authorization', $authorization2);
+        $this->assertEquals($authorization1, $authorization2);
+    }
+
+    /**
+     * @expectedException PayPalRestApiClient\Exception\BuilderException
+     * @expectedExceptionMessage Mandatory keys missing for PayPalRestApiClient\Builder\TransactionsBuilder: amount
+     */
+    public function testBuildValidtion()
+    {
+        $data = array(
+            array()
+        );
+
+        $transactions = $this->builder->build($data);
+    }
+
     public function testBuildArrayFromObjects()
     {
         $amount = $this->getMock('PayPalRestApiClient\Model\AmountInterface');

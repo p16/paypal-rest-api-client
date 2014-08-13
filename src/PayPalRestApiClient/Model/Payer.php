@@ -20,23 +20,32 @@ class Payer implements PayerInterface
      *
      * @see https://developer.paypal.com/docs/api/#payer-object
      */
-    public function __construct($paymentMethod, array $fundingInstruments = null, array $info = null)
+    public function __construct($paymentMethod, array $fundingInstruments = array(), array $info = array())
     {
         $this->paymentMethod = $paymentMethod;
         $this->fundingInstruments = $fundingInstruments;
         $this->info = $info;
     }
 
+    /**
+     * @return string
+     */
     public function getPaymentMethod()
     {
         return $this->paymentMethod;
     }
 
+    /**
+     * @return array
+     */
     public function getInfo()
     {
         return $this->info;
     }
 
+    /**
+     * @return array
+     */
     public function getFundingInstruments()
     {
         return $this->fundingInstruments;

@@ -7,35 +7,30 @@ namespace PayPalRestApiClient\Model;
  */
 class PaypalPaymentAuthorization extends Payment implements PaymentAuthorizationInterface
 {
-    protected function initUrls()
-    {
-        parent::initUrls();
-
-        $links = array();
-        if ($authorization = $this->getAuthorization()) {
-            $links = $authorization['links'];
-        }
-
-        foreach ($links as $link) {
-            switch ($link['rel']) {
-                case 'capture':
-                    $this->captureUrl = $link['href'];
-                    break;
-            }
-        }
-    }
-
+    /**
+     * If set, returns the first transaction amount object
+     *
+     * N.B.: At the moment, the PayPal REST API do not support multiple transactions
+     *
+     * @return PayPalRestApiClient\Model\Amount|null
+     */
     public function getAmount()
     {
         if (count($this->transactions) <= 0) {
             return null;
         }
 
-        return new Amount(
-            $this->transactions[0]['amount']['currency'],
-            $this->transactions[0]['amount']['total'],
-            $this->transactions[0]['amount']['details']
-        );
+        return $this->transactions[0]->getAmount();
+    }
+
+    /**
+     * Returns the capture url that should be use to capture an authorized payment
+     *
+     * @return string
+     */
+    public function getCaptureUrl()
+    {
+        return $this->getAuthorization()->getCaptureUrl();
     }
 
     /**
@@ -45,8 +40,6 @@ class PaypalPaymentAuthorization extends Payment implements PaymentAuthorization
      */
     public function getAuthorization()
     {
-        if (isset($this->transactions[0]['related_resources'])) {
-            return $this->transactions[0]['related_resources'][0]['authorization'];
-        }
+        return $this->transactions[0]->getAuthorization();
     }
 }

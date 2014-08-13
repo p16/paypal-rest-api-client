@@ -5,7 +5,7 @@ namespace PayPalRestApiClient\Model;
 /**
  * The Link class represents a paypal HATEOAS link object
  */
-class Link
+class Link implements LinkInterface
 {
     protected $href;
     protected $rel;
@@ -27,16 +27,25 @@ class Link
         $this->method = $method;
     }
 
+    /**
+     * @return string
+     */
     public function getHref()
     {
         return $this->href;
     }
 
+    /**
+     * @return string
+     */
     public function getRel()
     {
         return $this->rel;
     }
 
+    /**
+     * @return string
+     */
     public function getMethod()
     {
         return $this->method;

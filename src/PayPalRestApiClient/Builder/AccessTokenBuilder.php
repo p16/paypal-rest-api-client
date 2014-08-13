@@ -2,13 +2,13 @@
 
 namespace PayPalRestApiClient\Builder;
 
-use PayPalRestApiClient\Exception\BuilderException;
 use PayPalRestApiClient\Model\AccessToken;
+use PayPalRestApiClient\Exception\BuilderException;
 
 /**
  * The AccessTokenBuilder builds instances of PayPalRestApiClient\Model\AccessToken
  */
-class AccessTokenBuilder
+class AccessTokenBuilder extends AbstractBuilder
 {
     /**
      * Build an instance of PayPalRestApiClient\Model\AccessToken given an array
@@ -25,13 +25,10 @@ class AccessTokenBuilder
      */
     public function build(array $data)
     {
-        $mandatoryKeys = array(
-            'scope', 'access_token', 'token_type', 'app_id', 'expires_in',
+        $this->validateArrayKeys(
+            array('scope', 'access_token', 'token_type', 'app_id', 'expires_in'),
+            $data
         );
-        $diff = array_diff($mandatoryKeys, array_keys($data));
-        if (count($diff) > 0) {
-            throw new BuilderException('Mandatory data missing for: '.implode(', ', $diff));
-        }
 
         if (empty($data['access_token'])) {
             throw new BuilderException('access_token is mandatory and should not be empty');

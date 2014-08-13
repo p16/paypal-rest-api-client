@@ -3,13 +3,110 @@
 namespace PayPalRestApiClient\Builder;
 
 use PayPalRestApiClient\Exception\BuilderException;
+use PayPalRestApiClient\Model\Transaction;
 use PayPalRestApiClient\Model\TransactionInterface;
 
 /**
- * The TransactionsBuilder builds arrays that represents a paypal transactions array
+ * The TransactionsBuilder builds arrays that represents a paypal transactions array or an array of Transaction onjects given an array
  */
-class TransactionsBuilder
+class TransactionsBuilder extends AbstractBuilder
 {
+    protected $amountBuilder;
+    protected $authorizationBuilder;
+
+    public function __construct()
+    {
+        $this->amountBuilder = new AmountBuilder();
+        $this->authorizationBuilder = new AuthorizationBuilder();
+    }
+
+    public function setAmountBuilder($amountBuilder)
+    {
+        $this->amountBuilder = $amountBuilder;
+    }
+
+    public function setAuthorizationBuilder($authorizationBuilder)
+    {
+        $this->authorizationBuilder = $authorizationBuilder;
+    }
+
+    /**
+     * Build an array of PayPalRestApiClient\Model\Transaction instances given an array of arrays
+     *
+     * @param array $transactions Should contains arrays with at least the amount key set
+     * 
+     * @return array of PayPalRestApiClient\Model\Transaction instances
+     * 
+     * @throws PayPalRestApiClient\Exception\BuilderException If not all keys are set for each transaction
+     *
+     * @see https://developer.paypal.com/docs/api/#transaction-object
+     */
+    public function build(array $transactions)
+    {
+        $results = array();
+        foreach ($transactions as $transaction) {
+            $results[] = $this->buildTransaction($transaction);
+        }
+
+        return $results;
+    }
+
+    protected function buildTransaction(array $data)
+    {
+        $this->validateArrayKeys(
+            array('amount'),
+            $data
+        );
+
+        $amount = $this->amountBuilder->build($data['amount']);
+
+        $description = null;
+        if (isset($data['description'])) {
+            $description = $data['description'];
+        }
+
+        $itemList = array();
+        if (isset($data['item_list'])) {
+            $itemList = $data['item_list'];
+        }
+
+        $relatedResources = array();
+        if (isset($data['related_resources'])) {
+            $relatedResources = $this->buildRelatedResources($data['related_resources']);
+        }
+
+        return new Transaction(
+            $amount,
+            $description,
+            $itemList,
+            $relatedResources
+        );
+
+    }
+
+    private function buildRelatedResources($relatedResources)
+    {
+        $results = array();
+        foreach ($relatedResources as $index => $resourceItems) {
+            $results[$index] = array();
+            foreach ($resourceItems as $key => $resource) {
+
+                switch ($key) {
+                    case 'authorization':
+                        
+                        $results[$index][$key] = $this->authorizationBuilder->build($resource);
+                        break;
+                    
+                    default:
+                        $results[$index][$key] = $resource;
+                        break;
+                }
+            }
+        }
+
+        return $results;
+    }
+
     /**
      * Build an array that represents a paypal transactions array
      *

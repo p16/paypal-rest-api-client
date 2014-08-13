@@ -37,26 +37,41 @@ class AccessToken
         $this->scope = $scope;
     }
 
+    /**
+     * @return string
+     */
     public function getAccessToken()
     {
         return $this->accessToken;
     }
 
+    /**
+     * @return string
+     */
     public function getTokenType()
     {
         return $this->tokenType;
     }
 
+    /**
+     * @return string
+     */
     public function getAppId()
     {
         return $this->appId;
     }
 
+    /**
+     * @return int
+     */
     public function getExpiresIn()
     {
         return $this->expiresIn;
     }
 
+    /**
+     * @return string
+     */
     public function getScope()
     {
         return $this->scope;

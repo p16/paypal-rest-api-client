@@ -26,4 +26,9 @@ interface TransactionInterface
      * @return array
      */
     public function getRelatedResources();
+
+    /**
+     * @return PayPalRestApiClient\Model\Authorization|null
+     */
+    public function getAuthorization();
 }

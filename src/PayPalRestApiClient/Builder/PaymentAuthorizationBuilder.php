@@ -11,9 +11,37 @@ use PayPalRestApiClient\Model\CreditCardPaymentAuthorization;
  * of PayPalRestApiClient\Model\PaypalPaymentAuthorization
  * or PayPalRestApiClient\Model\CreditCardPaymentAuthorization 
  * based on the payer "payment_method"
+ *
+ * PaymentAuthorizationBuilder depends on 3 other builders: PayerBuilder,  TransactionsBuilder and LinkBuilder
  */
-class PaymentAuthorizationBuilder
+class PaymentAuthorizationBuilder extends AbstractBuilder
 {
+    protected $payerBuilder;
+    protected $linkBuilder;
+    protected $transactionsBuilder;
+
+    public function __construct()
+    {
+        $this->payerBuilder = new PayerBuilder();
+        $this->transactionsBuilder = new TransactionsBuilder();
+        $this->linkBuilder = new LinkBuilder();
+    }
+
+    public function setTransactionsBuilder($transactionsBuilder)
+    {
+        $this->transactionsBuilder = $transactionsBuilder;
+    }
+
+    public function setPayerBuilder($payerBuilder)
+    {
+        $this->payerBuilder = $payerBuilder;
+    }
+
+    public function setLinksBuilder($linkBuilder)
+    {
+        $this->linkBuilder = $linkBuilder;
+    }    
+
     /**
      * Build an instance of PayPalRestApiClient\Model\PaymentAuthorization given an array
      *
@@ -25,20 +53,25 @@ class PaymentAuthorizationBuilder
      * 
      * @throws PayPalRestApiClient\Exception\BuilderException If not all keys are set or when "id" is empty
      *
-     * @see https://developer.paypal.com/docs/api/#authentication--headers
+     * @see https://developer.paypal.com/docs/integration/direct/capture-payment/#authorize-the-payment
      */
     public function build(array $data)
     {
-        $mandatoryKeys = array(
-            'id', 'create_time', 'update_time', 'state', 'intent', 'payer', 'transactions', 'links',
+        $this->validateArrayKeys(
+            array('id', 'create_time', 'update_time', 'state', 'intent', 'payer', 'transactions', 'links'),
+            $data
         );
-        $diff = array_diff($mandatoryKeys, array_keys($data));
-        if (count($diff) > 0) {
-            throw new BuilderException('Mandatory data missing for: '.implode(', ', $diff));
-        }
 
         if (empty($data['id'])) {
             throw new BuilderException('id is mandatory and should not be empty');
+        }
+
+        $payer = $this->payerBuilder->build($data['payer']);
+        $transactions = $this->transactionsBuilder->build($data['transactions']);
+
+        $links = array();
+        foreach ($data['links'] as $link) {
+            $links[] = $this->linkBuilder->build($link);
         }
 
         if ($data['payer']['payment_method'] === 'paypal') {
@@ -48,9 +81,9 @@ class PaymentAuthorizationBuilder
                 $data['update_time'],
                 $data['state'],
                 $data['intent'],
-                $data['payer'],
-                $data['transactions'],
-                $data['links']
+                $payer,
+                $transactions,
+                $links
             );
             $authorization->setPaypalData($data);
 
@@ -63,9 +96,9 @@ class PaymentAuthorizationBuilder
             $data['update_time'],
             $data['state'],
             $data['intent'],
-            $data['payer'],
-            $data['transactions'],
-            $data['links']
+            $payer,
+            $transactions,
+            $links
         );
         $authorization->setPaypalData($data);
 

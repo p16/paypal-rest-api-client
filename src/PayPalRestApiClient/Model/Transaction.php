@@ -7,6 +7,8 @@ namespace PayPalRestApiClient\Model;
  */
 class Transaction implements TransactionInterface
 {
+    use \PayPalRestApiClient\Traits\AssertArrayOfObject;
+
     protected $amount;
     protected $description;
     protected $itemList;
@@ -27,26 +29,54 @@ class Transaction implements TransactionInterface
         $this->amount = $amount;
         $this->description = $description;
         $this->itemList = $itemList;
+
+        if (isset($this->relatedResources[0]['authorization'])) {
+            $authorization = $this->relatedResources[0]['authorization'];
+            $this->assertArrayOfObjects(array($authorization), 'PayPalRestApiClient\Model\Authorization', 'authorization');
+        }
+
         $this->relatedResources = $relatedResources;
     }
 
+    /**
+     * @return PayPalRestApiClient\Model\Amount
+     */
     public function getAmount()
     {
         return $this->amount;
     }
 
+    /**
+     * @return string
+     */
     public function getDescription()
     {
         return $this->description;
     }
 
+    /**
+     * @return array
+     */
     public function getItemList()
     {
         return $this->itemList;
     }
 
+    /**
+     * @return array
+     */
     public function getRelatedResources()
     {
         return $this->relatedResources;
+    }
+
+    /**
+     * @return PayPalRestApiClient\Model\Authorization|null
+     */
+    public function getAuthorization()
+    {
+        if (isset($this->relatedResources[0]['authorization'])) {
+            return $this->relatedResources[0]['authorization'];
+        }
     }
 }
