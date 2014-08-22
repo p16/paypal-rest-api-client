@@ -75,10 +75,15 @@ A [Json Schema validator](https://github.com/justinrainbow/json-schema) is used 
 
 **TO-DO for release 0.2**
 
-1. Move PayPalJsonSchemaValidator into a standalone repo (?)
+- Move PayPalJsonSchemaValidator into a standalone repo (?)
 
-2. Make the builder aware of the PayPalJsonSchemaValidator, so that they can validate what they are building when building from/to json
+- Make the builder aware of the PayPalJsonSchemaValidator, so that they can validate what they are building when building from/to json
 
-3. Add strict validation to model classes (?)
+- Add strict validation to model classes (?)
+
+**TO-DO for release 0.3**
+
+- Add ["billing plans"](https://developer.paypal.com/docs/api/#billing-plans-and-agreements) feature 
+
 
 
