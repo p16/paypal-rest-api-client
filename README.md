@@ -85,5 +85,11 @@ A [Json Schema validator](https://github.com/justinrainbow/json-schema) is used 
 
 - Add ["billing plans"](https://developer.paypal.com/docs/api/#billing-plans-and-agreements) feature 
 
+License
+-------
+
+Licensed under the [MIT license](http://opensource.org/licenses/MIT)
+
+Read [LICENSE](LICENSE) for more information
 
 
