@@ -24,7 +24,7 @@ Direct payment with paypal method
     $this->item_list = array(
         'items' => array(
             array(
-                'quantity' => 1,
+                'quantity' => '1',
                 'name' => 'product name',
                 'price' => '12.35',
                 'currency' => 'EUR',
