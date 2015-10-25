@@ -20,7 +20,7 @@ abstract class AbstractPayment
     protected $links;
 
     /**
-     * Construct 
+     * Construct
      *
      * @param string $id not null
      * @param string $createTime not null
@@ -34,12 +34,12 @@ abstract class AbstractPayment
     public function __construct(
         $id,
         $createTime,
-        $updateTime,
         $state,
         $intent,
         PayerInterface $payer,
         array $transactions,
-        array $links
+        array $links,
+        $updateTime = null
     ) {
         $this->id = $id;
         $this->createTime = $createTime;

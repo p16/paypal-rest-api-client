@@ -9,7 +9,7 @@ use PayPalRestApiClient\Model\Payment;
 /**
  * The PaymentBuilder builds instances of PayPalRestApiClient\Model\Payment
  *
- * PaymentBuilder depends on 3 other builders: PayerBuilder,  TransactionsBuilder and LinkBuilder 
+ * PaymentBuilder depends on 3 other builders: PayerBuilder,  TransactionsBuilder and LinkBuilder
  */
 class PaymentBuilder extends AbstractBuilder
 {
@@ -37,17 +37,17 @@ class PaymentBuilder extends AbstractBuilder
     public function setLinksBuilder($linkBuilder)
     {
         $this->linkBuilder = $linkBuilder;
-    }    
+    }
 
     /**
      * Build an instance of PayPalRestApiClient\Model\Payment given an array
      *
-     * @param array $data The array should contains the following keys: 
-     * id, create_time, update_time, state, intent, payer, transactions, links
+     * @param array $data The array should contains the following keys:
+     * id, create_time, state, intent, payer, transactions, links
      * The "id" key value should not be empty.
-     * 
+     *
      * @return PayPalRestApiClient\Model\Payment
-     * 
+     *
      * @throws PayPalRestApiClient\Exception\BuilderException If not all keys are set
      *
      * @see https://developer.paypal.com/docs/api/#payment-object
@@ -55,7 +55,7 @@ class PaymentBuilder extends AbstractBuilder
     public function build(array $data)
     {
         $this->validateArrayKeys(
-            array('id', 'create_time', 'update_time', 'state', 'intent', 'payer', 'transactions', 'links'),
+            array('id', 'create_time', 'state', 'intent', 'payer', 'transactions', 'links'),
             $data
         );
 
@@ -72,12 +72,12 @@ class PaymentBuilder extends AbstractBuilder
         $payment = new Payment(
             $data['id'],
             $data['create_time'],
-            $data['update_time'],
             $data['state'],
             $data['intent'],
             $this->payerBuilder->build($data['payer']),
             $this->transactionsBuilder->build($data['transactions']),
-            $links
+            $links,
+            isset($data['update_time']) ? $data['update_time'] : null
         );
         $payment->setPaypalData($data);
 

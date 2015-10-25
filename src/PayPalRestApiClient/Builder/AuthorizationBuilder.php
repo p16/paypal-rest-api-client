@@ -34,13 +34,13 @@ class AuthorizationBuilder extends AbstractBuilder
     /**
      * Build an instance of PayPalRestApiClient\Model\Authorization given an array
      *
-     * @param array $data The array should contains the following keys: 
-     * amount, create_time, update_time, state, parent_payment, id, valid_until, links.
-     * 
+     * @param array $data The array should contains the following keys:
+     * amount, create_time, state, parent_payment, id, valid_until, links.
+     *
      * @return PayPalRestApiClient\Model\Authorization
      *
      * @throws PayPalRestApiClient\Exception\BuilderException
-     * 
+     *
      * @see https://developer.paypal.com/docs/api/#authorization-object
      */
     public function build(array $data)

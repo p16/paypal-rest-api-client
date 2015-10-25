@@ -5,7 +5,7 @@ namespace PayPalRestApiClient\Builder;
 use PayPalRestApiClient\Exception\BuilderException;
 
 /**
- * The AbstractBuilder class contains common methods for model objects builders 
+ * The AbstractBuilder class contains common methods for model objects builders
  */
 abstract class AbstractBuilder
 {

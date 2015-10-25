@@ -9,7 +9,7 @@ use PayPalRestApiClient\Model\CreditCardPaymentAuthorization;
 /**
  * The PaymentAuthorizationBuilder builds instances
  * of PayPalRestApiClient\Model\PaypalPaymentAuthorization
- * or PayPalRestApiClient\Model\CreditCardPaymentAuthorization 
+ * or PayPalRestApiClient\Model\CreditCardPaymentAuthorization
  * based on the payer "payment_method"
  *
  * PaymentAuthorizationBuilder depends on 3 other builders: PayerBuilder,  TransactionsBuilder and LinkBuilder
@@ -40,17 +40,17 @@ class PaymentAuthorizationBuilder extends AbstractBuilder
     public function setLinksBuilder($linkBuilder)
     {
         $this->linkBuilder = $linkBuilder;
-    }    
+    }
 
     /**
      * Build an instance of PayPalRestApiClient\Model\PaymentAuthorization given an array
      *
-     * @param array $data The array should contains the following keys: 
+     * @param array $data The array should contains the following keys:
      * id, create_time, update_time, state, intent, payer, transactions, links.
      * The "id" key value should not be empty.
-     * 
+     *
      * @return PayPalRestApiClient\Model\PaypalPaymentAuthorization|PayPalRestApiClient\Model\CreditCardPaymentAuthorization
-     * 
+     *
      * @throws PayPalRestApiClient\Exception\BuilderException If not all keys are set or when "id" is empty
      *
      * @see https://developer.paypal.com/docs/integration/direct/capture-payment/#authorize-the-payment
@@ -78,12 +78,12 @@ class PaymentAuthorizationBuilder extends AbstractBuilder
             $authorization = new PaypalPaymentAuthorization(
                 $data['id'],
                 $data['create_time'],
-                $data['update_time'],
                 $data['state'],
                 $data['intent'],
                 $payer,
                 $transactions,
-                $links
+                $links,
+                $data['update_time']
             );
             $authorization->setPaypalData($data);
 
@@ -93,12 +93,12 @@ class PaymentAuthorizationBuilder extends AbstractBuilder
         $authorization = new CreditCardPaymentAuthorization(
             $data['id'],
             $data['create_time'],
-            $data['update_time'],
             $data['state'],
             $data['intent'],
             $payer,
             $transactions,
-            $links
+            $links,
+            $data['update_time']
         );
         $authorization->setPaypalData($data);
 

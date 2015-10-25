@@ -13,7 +13,6 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
         $payment = new Payment(
             "PAY-6T42818722685883WKPPAT6I",
             "2014-08-03T10:07:53Z",
-            "2014-08-03T10:07:53Z",
             'created',
             'sale',
             new Payer('paypal'),
@@ -34,7 +33,8 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
                     'execute',
                     'POST'
                 ),
-            )
+            ),
+            "2014-08-03T10:07:53Z"
         );
 
         $this->assertEquals(
