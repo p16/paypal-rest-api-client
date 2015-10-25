@@ -38,7 +38,7 @@ Add the following dependency to your composer.json
 
 Run
 
-    composer install p16/paypal-rest-api-client
+    composer update p16/paypal-rest-api-client
 
 
 
