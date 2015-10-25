@@ -45,7 +45,7 @@ class PaypalPaymentAuthorizationTest extends \PHPUnit_Framework_TestCase
             )
         );
         $obj = new PaypalPaymentAuthorization(
-            'PAY-ID', "2014-08-08T17:11:00Z", "2014-08-08T17:11:00Z",
+            'PAY-ID', "2014-08-08T17:11:00Z",
             "approved", "authorize",
             new Payer('paypal'),
             array(
@@ -66,7 +66,8 @@ class PaypalPaymentAuthorizationTest extends \PHPUnit_Framework_TestCase
                     'self',
                     'GET'
                 )
-            )
+            ),
+            "2014-08-08T17:11:00Z"
         );
 
         $this->assertInstanceOf(

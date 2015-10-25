@@ -7,7 +7,7 @@ This library wants to be a PHP client for the [PayPal REST API](https://develope
 
 There is an official SDK and you can find it [here](https://github.com/paypal/rest-api-sdk-php).
 
-I tried it and I tried to [contribute on it](https://github.com/p16/rest-api-sdk-php) (the tests were calling the actual paypal sandbox). 
+I tried it and I tried to [contribute on it](https://github.com/p16/rest-api-sdk-php) (the tests were calling the actual paypal sandbox).
 But I needed a simpler and OOP library, and I did not have the time to contribute as much as I think is needed on the official one, therefore I did this one.
 
 I'm working on a first stable realease that should be out before August 15th.
@@ -22,7 +22,7 @@ Features
 At the moment the only [PayPal REST API](https://developer.paypal.com/docs/api/) calls implemented are:
 
 - Require an access token: https://developer.paypal.com/docs/api/#authentication--headers
-- Create a payment (only with "paypal" and "credit_card" payment methods): https://developer.paypal.com/docs/api/#create-a-payment 
+- Create a payment (only with "paypal" and "credit_card" payment methods): https://developer.paypal.com/docs/api/#create-a-payment
 - Execute a payment: https://developer.paypal.com/docs/api/#execute-an-approved-paypal-payment
 - Authorize and capture a payment: https://developer.paypal.com/docs/integration/direct/capture-payment/
 - Validation of json schema for payment request body: [Json Schema](http://json-schema.org/), [PHP Json Schema validator](https://github.com/justinrainbow/json-schema), [PayPal REST API objects](https://developer.paypal.com/docs/api/)
@@ -33,7 +33,7 @@ Installation
 Add the following dependency to your composer.json
 
 
-    "p16/paypal-rest-api-client": "dev-master"
+    "p16/paypal-rest-api-client": "0.1.2"
 
 
 Run
@@ -54,7 +54,7 @@ Run
 
 From the root folder run
 
-    phpunit -c .
+    ./vendor/bin/phpunit -c .
 
 
 Documentation
@@ -83,7 +83,7 @@ A [Json Schema validator](https://github.com/justinrainbow/json-schema) is used 
 
 **TO-DO for release 0.3**
 
-- Add ["billing plans"](https://developer.paypal.com/docs/api/#billing-plans-and-agreements) feature 
+- Add ["billing plans"](https://developer.paypal.com/docs/api/#billing-plans-and-agreements) feature
 
 License
 -------

@@ -47,7 +47,6 @@ class CreditCardPaymentAuthorizationTest extends \PHPUnit_Framework_TestCase
         $obj = new CreditCardPaymentAuthorization(
             'PAY-ID',
             "2014-08-08T17:11:00Z",
-            "2014-08-08T17:11:00Z",
             "approved",
             "authorize",
             new Payer(
@@ -91,7 +90,8 @@ class CreditCardPaymentAuthorizationTest extends \PHPUnit_Framework_TestCase
                     'self',
                     'GET'
                 )
-            )
+            ),
+            "2014-08-08T17:11:00Z"
         );
 
         $this->assertInstanceOf('PayPalRestApiClient\Model\Authorization', $obj->getAuthorization());
@@ -137,7 +137,6 @@ class CreditCardPaymentAuthorizationTest extends \PHPUnit_Framework_TestCase
         $obj = new CreditCardPaymentAuthorization(
             'PAY-ID',
             "2014-08-08T17:11:00Z",
-            "2014-08-08T17:11:00Z",
             "approved",
             "authorize",
             new Payer(
@@ -181,7 +180,8 @@ class CreditCardPaymentAuthorizationTest extends \PHPUnit_Framework_TestCase
                     'self',
                     'GET'
                 )
-            )
+            ),
+            "2014-08-08T17:11:00Z"
         );
 
         $this->assertEquals(
