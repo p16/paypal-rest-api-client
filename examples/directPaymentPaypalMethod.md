@@ -3,72 +3,84 @@ Direct payment with paypal method
 
 [PayPal documentation](https://developer.paypal.com/docs/api/#create-a-payment)
 
-    $this->baseUrl = 'https://api.sandbox.paypal.com';
-    $this->returnUrl = 'http://example.com/success';
-    $this->cancelUrl = 'http://example.com/cancel';
+```php
+<?php
 
-    $this->client = new Client();
+use Guzzle\Http\Client;
+use PayPalRestApiClient\Repository\AccessTokenRepository;
+use PayPalRestApiClient\Service\PaymentService;
+use PayPalRestApiClient\Builder\PaymentRequestBodyBuilder;
+use PayPalRestApiClient\Builder\PaymentBuilder;
+use PayPalRestApiClient\Model\Amount;
+use PayPalRestApiClient\Model\Transaction;
+use PayPalRestApiClient\Model\Payer;
 
-    $repo = new AccessTokenRepository(
-        $this->client,
-        $this->baseUrl
-    );
-    $accessToken = $repo->getAccessToken($clientId, $secret);
+$baseUrl = 'https://api.sandbox.paypal.com';
+$returnUrl = 'http://example.com/success';
+$cancelUrl = 'http://example.com/cancel';
 
-    $paymentService = new PaymentService(
-        $this->client,
-        new PaymentRequestBodyBuilder(),
-        $this->baseUrl
-    );
+$client = new Client();
 
-    $this->item_list = array(
-        'items' => array(
-            array(
-                'quantity' => '1',
-                'name' => 'product name',
-                'price' => '12.35',
-                'currency' => 'EUR',
-                'sku' => '1233456789',
-            ),
-        )
-    );
+$repo = new AccessTokenRepository(
+    $client,
+    $baseUrl
+);
+$accessToken = $repo->getAccessToken($clientId, $secret);
 
-    $amount = new Amount('EUR', '12.35');
-    $transaction = new Transaction($amount, 'my transaction', $this->item_list);
+$paymentService = new PaymentService(
+    $client,
+    new PaymentRequestBodyBuilder(),
+    $baseUrl
+);
 
-    $payment = $paymentService->create(
-        $accessToken,
-        new Payer('paypal'),
+$itemList = array(
+    'items' => array(
         array(
-            'return_url' => $this->returnUrl,
-            'cancel_url' => $this->cancelUrl
+            'quantity' => '1',
+            'name' => 'product name',
+            'price' => '12.35',
+            'currency' => 'EUR',
+            'sku' => '1233456789',
         ),
-        array($transaction)
-    );
+    )
+);
 
-    $_SESSION['payment_data'] = $payment->getPaypalData();
-    // or
-    // $_SESSION['payment_data'] = serialize($payment);
+$amount = new Amount('EUR', '12.35');
+$transaction = new Transaction($amount, 'my transaction', $itemList);
 
-    $redirectUrl = $payment->getApprovalUrl();
+$payment = $paymentService->create(
+    $accessToken,
+    new Payer('paypal'),
+    array(
+        'return_url' => $returnUrl,
+        'cancel_url' => $cancelUrl
+    ),
+    array($transaction)
+);
 
-    /* redirects the user to $redirectUrl */
-    /* coming back from PayPal http://example.com/success?token=EC-9VK533621R3302713&PayerID=CBMFXGW3CHM7Q */
+$_SESSION['payment_data'] = $payment->getPaypalData();
+// or
+// $_SESSION['payment_data'] = serialize($payment);
 
-    $payerId = $_GET['PayerID'];
+$redirectUrl = $payment->getApprovalUrl();
 
-    $paymentService = new PaymentService(
-        $this->client,
-        new PaymentRequestBodyBuilder(),
-        $this->baseUrl
-    );
+/* redirects the user to $redirectUrl */
+/* coming back from PayPal http://example.com/success?token=EC-9VK533621R3302713&PayerID=CBMFXGW3CHM7Q */
 
-    $paymentBuilder = new PaymentBuilder();
-    $originalPayment = $paymentBuilder->build($_SESSION['payment_data']);
-    // or
-    // $originalPayment = unserialize($_SESSION['payment_data']);
+$payerId = $_GET['PayerID'];
 
-    $payment = $service->execute($accessToken, $originalPayment, $payerId);
+$paymentService = new PaymentService(
+    $client,
+    new PaymentRequestBodyBuilder(),
+    $baseUrl
+);
 
-    /* 'approved' === $payment->getState() */
+$paymentBuilder = new PaymentBuilder();
+$originalPayment = $paymentBuilder->build($_SESSION['payment_data']);
+// or
+// $originalPayment = unserialize($_SESSION['payment_data']);
 
+$payment = $service->execute($accessToken, $originalPayment, $payerId);
+
+/* 'approved' === $payment->getState() */
+```
