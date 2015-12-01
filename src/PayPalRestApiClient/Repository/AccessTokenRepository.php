@@ -4,7 +4,6 @@ namespace PayPalRestApiClient\Repository;
 
 use Guzzle\Http\Client;
 use PayPalRestApiClient\Builder\AccessTokenBuilder;
-use Guzzle\Http\Exception\ClientErrorResponseException;
 
 /**
  * The AccessTokenRepository class has the responsability of retriving an access token given a pair of cliendId and clientSecret
@@ -20,7 +19,7 @@ class AccessTokenRepository
     protected $debug = false;
 
     /**
-     * Construct 
+     * Construct
      *
      * @param Guzzle\Http\Client $client not null
      * @param string $baseUrl not null
@@ -43,13 +42,13 @@ class AccessTokenRepository
 
     /**
      * Returns an access token object if paypal accepts the given credential
-     * 
+     *
      * For the time being, expires_in is not taken into consideration.
      * Calling twice the getAccessToken method with the same credential will give you two different token.
      *
      * @param string $clientId not null
      * @param string $secret not null
-     * 
+     *
      * @return PayPalRestApiClient\Model\AccessToken
      */
     public function getAccessToken($clientId, $secret)
