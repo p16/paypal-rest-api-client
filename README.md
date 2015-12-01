@@ -30,16 +30,28 @@ At the moment the only [PayPal REST API](https://developer.paypal.com/docs/api/)
 Installation
 ------------
 
-Add the following dependency to your composer.json
-
-
-    "p16/paypal-rest-api-client": "0.1.2"
-
-
 Run
 
-    composer update p16/paypal-rest-api-client
+```
+composer require p16/paypal-rest-api-client:1.0.0
+```
 
+or edit your composer.json as follow
+
+```
+...
+    "require": {
+        "p16/paypal-rest-api-client": "1.0.0"
+        ...
+    }
+...
+```
+
+and then run
+
+```
+composer update p16/paypal-rest-api-client
+```
 
 
 Running tests
@@ -73,7 +85,7 @@ Documentation
 A [Json Schema validator](https://github.com/justinrainbow/json-schema) is used to validate a call request body. You can find all the available schema definition [here](src/PayPalRestApiClient/Validator/schema).
 
 
-**TO-DO for release 0.2**
+**TO-DO for release 1.1.0**
 
 - Move PayPalJsonSchemaValidator into a standalone repo (?)
 
@@ -81,7 +93,7 @@ A [Json Schema validator](https://github.com/justinrainbow/json-schema) is used 
 
 - Add strict validation to model classes (?)
 
-**TO-DO for release 0.3**
+**TO-DO for release 1.2.0**
 
 - Add ["billing plans"](https://developer.paypal.com/docs/api/#billing-plans-and-agreements) feature
 
