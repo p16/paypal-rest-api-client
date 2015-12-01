@@ -14,7 +14,7 @@ class PayPalJsonSchemaValidator
 
     /**
      * Construct
-     * 
+     *
      * @param string $schema represents a specifica schema to validate against (ex.: 'payment.json')
      * @param mixed $data json decoded string (with "assoc" parameter set to false http://it1.php.net/json_decode )
      */
@@ -34,6 +34,8 @@ class PayPalJsonSchemaValidator
         $schema = $retriever->retrieve($this->schema);
 
         $refResolver = new \JsonSchema\RefResolver($retriever);
+        // @see https://github.com/justinrainbow/json-schema/issues/180
+        $refResolver::$maxDepth = 20;
         $refResolver->resolve($schema, $this->refResolverPath);
 
         $this->validator = new \JsonSchema\Validator();

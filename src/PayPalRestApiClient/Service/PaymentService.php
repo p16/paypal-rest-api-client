@@ -27,7 +27,7 @@ class PaymentService
     protected $debug;
 
     /**
-     * Construct 
+     * Construct
      *
      * @param Guzzle\Http\Client $client not null
      * @param PayPalRestApiClient\Builder\PaymentRequestBodyBuilder $paymentRequestBodyBuilder not null
@@ -91,7 +91,7 @@ class PaymentService
             $authorizationBuilder = new PaymentAuthorizationBuilder();
             $authorization = $authorizationBuilder->build($data);
 
-            return $authorization;        
+            return $authorization;
         }
 
         $paymentBuilder = new PaymentBuilder();
@@ -178,7 +178,7 @@ class PaymentService
         $authorizationBuilder = new PaymentAuthorizationBuilder();
         $authorization = $authorizationBuilder->build($data);
 
-        return $authorization;        
+        return $authorization;
     }
 
     /**
@@ -215,7 +215,7 @@ class PaymentService
         $paymentBuilder = new PaymentBuilder();
         $payment = $paymentBuilder->build($data);
 
-        return $payment;        
+        return $payment;
     }
 
     protected function assertReqeustJsonSchema($requestBody)
